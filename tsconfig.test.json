@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "outDir": ".test-build",
+    "rootDir": ".",
+    "incremental": false,
+    "paths": {}
+  },
+  "include": [
+    "lib/domain/**/*.ts",
+    "lib/dashboard/**/*.ts",
+    "lib/data/**/*.ts",
+    "lib/evaluation/**/*.ts",
+    "lib/intake/**/*.ts",
+    "tests/**/*.ts"
+  ]
+}
