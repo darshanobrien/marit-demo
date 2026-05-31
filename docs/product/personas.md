@@ -51,12 +51,12 @@ AI Builders are members of the internal AI Lab who prototype, evaluate, and help
 
 ## Admin
 
-Admins represent future configuration ownership. For the first weekend demo, Admin is mainly a simulated role and should not drive major feature work.
+Admins represent configuration ownership for the AI tools catalogue. Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
 
 ### Goals
 
 - Support demo setup and reset if needed.
-- Eventually manage available AI tools.
+- Manage available, restricted, pilot, deprecated, and under-review AI tools.
 - Eventually manage responsible AI pillar definitions.
 
 ### Needs
@@ -66,4 +66,4 @@ Admins represent future configuration ownership. For the first weekend demo, Adm
 
 ### Frictions
 
-- Admin capabilities are deferred unless a task explicitly asks for them.
+- Admin access is simulated for the first demo, so production authorization is still future work.

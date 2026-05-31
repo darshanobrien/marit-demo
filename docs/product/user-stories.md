@@ -25,7 +25,9 @@
 ## Admin
 
 - As an Admin, I want future configuration boundaries documented so production settings can be added later.
-- As an Admin, I may eventually manage the mock AI tools catalogue, but this is not required for the first demo.
+- As an Admin, I want to maintain an inventory of approved, restricted, pilot, deprecated, and under-review AI tools so business cases are assessed against the actual AI capabilities available to the firm.
+
+Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
 
 ## Cross-Cutting Stories
 

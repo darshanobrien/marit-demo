@@ -85,6 +85,8 @@ The Responsible AI report also uses a derived display model:
 - Recommended tool ids are joined to the mock AI tool catalogue for names, descriptions, limitations, and complexity.
 - Responsible AI pillar ids are joined to the locked pillar catalogue for names and descriptions.
 
+Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
+
 ## AITool
 
 | Field | Type | Notes |
@@ -104,7 +106,7 @@ The Responsible AI report also uses a derived display model:
 | `accessibilityConsiderations` | string | Accessibility notes for use and review. |
 | `responsibleAiNotes` | string | Responsible AI review and oversight notes. |
 | `securityPrivacyNotes` | string | Security, privacy, and data handling notes. |
-| `status` | `available` \| `pilot` \| `restricted` \| `deprecated` | Catalogue status. |
+| `status` | `available` \| `underReview` \| `pilot` \| `restricted` \| `deprecated` | Catalogue status. |
 | `lastReviewedAt` | string | Last review date in `YYYY-MM-DD` format. |
 | `limitations` | string[] | Constraints and caveats. |
 | `riskProfile` | AIToolRiskProfile | Demo sensitivity support, risk notes, and human review flag. |

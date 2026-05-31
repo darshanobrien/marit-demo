@@ -38,7 +38,9 @@ The current seed set includes 7 mocked internal tools:
 - Data Quality Analyzer.
 - Policy Q&A Assistant.
 
-Each tool includes id, name, description, capabilities, suitable use cases, limitations, risk notes, supported demo data sensitivity, and implementation complexity.
+Each tool includes id, name, description, capabilities, suitable use cases, limitations, risk notes, supported demo data sensitivity, status, and implementation complexity.
+
+Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
 
 ### Assessment Reports
 

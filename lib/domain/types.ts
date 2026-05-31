@@ -70,7 +70,7 @@ export type AIToolIntegrationOption =
   | "microsoft365"
   | "workflowAutomation"
   | "customConnector";
-export type AIToolStatus = "available" | "pilot" | "restricted" | "deprecated";
+export type AIToolStatus = "available" | "underReview" | "pilot" | "restricted" | "deprecated";
 
 export type AIToolCapability =
   | "documentExtraction"

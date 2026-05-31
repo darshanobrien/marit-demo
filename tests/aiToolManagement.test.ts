@@ -111,7 +111,10 @@ describe("AI tools form validation", () => {
   });
 
   it("accepts a valid AI tool form", () => {
-    assert.deepEqual(validateAIToolForm(validFormValues()), []);
+    const values = validFormValues();
+
+    assert.deepEqual(validateAIToolForm(values), []);
+    assert.equal(createAIToolFromForm(values, { id: "tool-under-review" }).status, "underReview");
   });
 });
 
@@ -133,7 +136,7 @@ function validFormValues(): AIToolFormValues {
     accessibilityConsiderations: "Outputs must be reviewed in accessible document formats.",
     responsibleAiNotes: "Review uncertainty and extracted fields before use.",
     securityPrivacyNotes: "Use approved workspaces and avoid restricted data until cleared.",
-    status: "pilot",
+    status: "underReview",
     lastReviewedAt: "2026-05-31",
   };
 }

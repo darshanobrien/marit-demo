@@ -6,7 +6,7 @@ Marit should be designed around three roles, with only the first two needed for 
 
 - Business User: submits and views business cases.
 - AI Builder: reviews assessments and prioritization.
-- Admin: deferred configuration role.
+- Admin: maintains the AI tools catalogue through simulated role-aware access.
 
 Day one should simulate roles through a role switcher with Business User, AI Builder, and Admin. This is not real authentication.
 
@@ -54,6 +54,8 @@ The Dashboard view should list seeded and browser-session submitted cases togeth
 Dashboard filters should remain lightweight: status, business area, and urgency are enough for the demo. Sorting should support newest first, urgency, and priority/score.
 
 ## AI Tool Matching
+
+Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
 
 The app should compare each business case with a mocked list of available AI tools. Each matched tool should include:
 

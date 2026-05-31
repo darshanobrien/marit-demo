@@ -60,6 +60,8 @@ Roles are simulated at first, but the app should keep role-aware flows:
 - AI Builder: prioritization, report review, notes.
 - Admin: simulated role for AI tools catalogue management in browser-session storage.
 
+Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
+
 ## Data Flow
 
 1. Business User enters a business case.
@@ -67,7 +69,7 @@ Roles are simulated at first, but the app should keep role-aware flows:
 3. The evaluation service generates a draft assessment.
 4. AI Builder opens the report and reviews it.
 5. Review status and notes are stored in mock state for the demo.
-6. Admin can add AI tools to the browser-session catalogue; seeded tools remain the baseline.
+6. Admin can add AI tools to the browser-session catalogue; seeded tools remain the baseline inventory of firm capabilities.
 
 ## Key Constraints
 

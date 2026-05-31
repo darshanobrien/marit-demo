@@ -108,6 +108,8 @@ Key elements:
 
 Purpose: Let Admin users manage the AI tools catalogue used for feasibility matching.
 
+Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
+
 Access:
 
 - Visible only when the simulated role is Admin.

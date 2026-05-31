@@ -4,6 +4,8 @@ Marit is an AI Business Case Prioritization and Evaluation Tool for a weekend-de
 
 Business teams submit AI opportunity requests. Marit evaluates each request against a known list of available AI tools, generates a feasibility and responsible AI assessment, and prepares a report for an internal AI Lab. AI Builders then review the AI-generated assessment.
 
+Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
+
 ## Current Status
 
 This repository contains planning documentation, a bilingual landing page, and the initial static-first Next.js app shell. No API, database, infrastructure, real authentication, or real AI integration has been added.
@@ -13,7 +15,7 @@ This repository contains planning documentation, a bilingual landing page, and t
 The first demo should show this happy path:
 
 1. A Business User submits a business case describing a pain point.
-2. Marit evaluates the request against available internal AI tools.
+2. Marit evaluates the request against available internal AI tools. Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
 3. Marit generates an AI Lab assessment report.
 4. The report includes feasibility, relevant tools, implementation risks, pros and cons, recommended next steps, and responsible AI scoring.
 5. An AI Builder reviews the generated assessment.

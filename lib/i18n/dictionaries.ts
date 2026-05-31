@@ -415,7 +415,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
         title: "Admin / Tools",
         description: "Manage the AI tools catalogue used for feasibility and fit evaluation.",
         cardTitle: "AI tools catalogue",
-        cardBody: "Review and maintain the AI capabilities available for business-case matching.",
+        cardBody:
+          "Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.",
         primaryAction: "View tools",
         secondaryAction: "Review catalogue",
       },
@@ -428,7 +429,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     adminTools: {
       summaryTitle: "AI tools catalogue",
       summaryBody:
-        "Manage the AI capabilities Marit evaluates against submitted business cases. Added tools are saved for this browser session.",
+        "Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm. Added tools are saved for this browser session.",
       listTitle: "Available AI tools",
       tableCaption: "AI tools with provider, deployment, sensitivity suitability, review requirement, and review date.",
       formTitle: "Add AI tool",
@@ -561,6 +562,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       },
       statuses: {
         available: "Available",
+        underReview: "Under review",
         pilot: "Pilot",
         restricted: "Restricted",
         deprecated: "Deprecated",
@@ -600,7 +602,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       roleIntro: {
         businessUser: "Your demo view emphasizes request status, readiness, and next step.",
         aiBuilder: "AI Builder view adds feasibility, tool-fit, and responsible AI risk signals for prioritization.",
-        admin: "Admin view includes prioritization signals and the separate AI tools catalogue workflow.",
+        admin:
+          "Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.",
       },
       metrics: {
         totalRequests: "Total requests",
@@ -1017,9 +1020,11 @@ export const dictionaries: Record<Locale, Dictionary> = {
       },
       adminTools: {
         title: "Administration / Outils",
-        description: "Gérez le catalogue d'outils IA utilisé pour l'évaluation de faisabilité et d'adéquation.",
+        description:
+          "Les administrateurs maintiennent un inventaire des outils IA approuvés, restreints, pilotes et retirés, ainsi que des outils IA en cours de révision. Les dossiers d'affaires ne sont pas évalués seulement de façon abstraite, mais selon les capacités IA réelles disponibles pour l'entreprise.",
         cardTitle: "Catalogue des outils IA",
-        cardBody: "Révisez et maintenez les capacités IA disponibles pour l'appariement des dossiers d'affaires.",
+        cardBody:
+          "Les administrateurs maintiennent un inventaire des outils IA approuvés, restreints, pilotes et retirés, ainsi que des outils IA en cours de révision. Les dossiers d'affaires ne sont pas évalués seulement de façon abstraite, mais selon les capacités IA réelles disponibles pour l'entreprise.",
         primaryAction: "Voir les outils",
         secondaryAction: "Réviser le catalogue",
       },
@@ -1032,7 +1037,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
     adminTools: {
       summaryTitle: "Catalogue des outils IA",
       summaryBody:
-        "Gérez les capacités IA que Marit compare aux dossiers d'affaires soumis. Les outils ajoutés sont enregistrés pour cette session de navigateur.",
+        "Les administrateurs maintiennent un inventaire des outils IA approuvés, restreints, pilotes et retirés, ainsi que des outils IA en cours de révision. Les dossiers d'affaires ne sont pas évalués seulement de façon abstraite, mais selon les capacités IA réelles disponibles pour l'entreprise. Les outils ajoutés sont enregistrés pour cette session de navigateur.",
       listTitle: "Outils IA disponibles",
       tableCaption: "Outils IA avec fournisseur, déploiement, données appropriées, révision humaine et date de révision.",
       formTitle: "Ajouter un outil IA",
@@ -1165,6 +1170,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       },
       statuses: {
         available: "Disponible",
+        underReview: "En révision",
         pilot: "Pilote",
         restricted: "Restreint",
         deprecated: "Retiré",
@@ -1204,7 +1210,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
       roleIntro: {
         businessUser: "Votre vue de démonstration met l'accent sur le statut, l'état de l'évaluation et la prochaine étape.",
         aiBuilder: "La vue constructeur IA ajoute des signaux de faisabilité, d'adéquation des outils et de risque IA responsable pour la priorisation.",
-        admin: "La vue administrateur inclut les signaux de priorité et le parcours distinct du catalogue des outils IA.",
+        admin:
+          "Les administrateurs maintiennent un inventaire des outils IA approuvés, restreints, pilotes et retirés, ainsi que des outils IA en cours de révision. Les dossiers d'affaires ne sont pas évalués seulement de façon abstraite, mais selon les capacités IA réelles disponibles pour l'entreprise.",
       },
       metrics: {
         totalRequests: "Demandes totales",

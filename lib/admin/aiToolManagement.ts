@@ -65,6 +65,7 @@ export const aiToolIntegrationOptionOptions: AIToolIntegrationOption[] = [
 
 export const aiToolStatusOptions: AIToolStatus[] = [
   "available",
+  "underReview",
   "pilot",
   "restricted",
   "deprecated",

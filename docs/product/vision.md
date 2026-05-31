@@ -10,6 +10,8 @@ Business teams often have AI ideas before they know whether those ideas are feas
 
 Marit creates a structured intake and assessment loop so the AI Lab can review more ideas with less manual triage.
 
+Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
+
 ## First Demo Outcome
 
 The first demo should prove that Marit can:
