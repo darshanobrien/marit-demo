@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/Badge";
+import { BusinessCaseAssessmentReport } from "@/components/BusinessCaseAssessmentReport";
 import { BusinessCaseDashboard } from "@/components/BusinessCaseDashboard";
 import { BusinessCaseIntakeForm } from "@/components/BusinessCaseIntakeForm";
 import { Button } from "@/components/Button";
@@ -27,6 +28,7 @@ export function AppShell() {
   const [locale, setLocale] = useState<Locale>(defaultLocale);
   const [role, setRole] = useState<Role>(defaultRole);
   const [activePage, setActivePage] = useState<PageKey>(defaultPage);
+  const [selectedBusinessCaseId, setSelectedBusinessCaseId] = useState<string | null>(null);
   const dictionary = dictionaries[locale];
   const page = activePage === "home" ? null : dictionary.pages[activePage];
 
@@ -127,11 +129,23 @@ export function AppShell() {
                       locale={locale}
                       role={role}
                       onNavigate={(pageKey: ShellPageKey) => setActivePage(pageKey)}
+                      onViewAssessment={(businessCaseId) => {
+                        setSelectedBusinessCaseId(businessCaseId);
+                        setActivePage("assessments");
+                      }}
                     />
                   ) : activePage === "submit" ? (
                     <BusinessCaseIntakeForm
                       dictionary={dictionary}
                       onNavigate={(pageKey: ShellPageKey) => setActivePage(pageKey)}
+                    />
+                  ) : activePage === "assessments" ? (
+                    <BusinessCaseAssessmentReport
+                      dictionary={dictionary}
+                      locale={locale}
+                      selectedBusinessCaseId={selectedBusinessCaseId}
+                      onBackToDashboard={() => setActivePage("dashboard")}
+                      onSubmitAnother={() => setActivePage("submit")}
                     />
                   ) : (
                     <>

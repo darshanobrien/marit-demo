@@ -31,6 +31,8 @@ Newly submitted mock business cases can be evaluated by `DeterministicEvaluation
 
 The intake flow calls this existing service immediately after a valid browser-session submission and stores the generated assessment alongside the submitted case in `localStorage`. This does not add a real LLM, API key, network call, or server boundary.
 
+The report view also uses this boundary. When an assessment is already stored, the report renders that saved mock assessment. When a seeded or older case has no stored assessment, the report generates a deterministic in-memory assessment on view without persisting it.
+
 Benefits:
 
 - No cost.
@@ -81,6 +83,8 @@ The first evaluator:
 ## Review Requirement
 
 Every generated assessment must be labelled as AI-generated until reviewed by an AI Builder. The UI should show review status clearly.
+
+The first report view includes AI Builder review guidance but does not yet implement editable notes, approval, or review status changes.
 
 ## Quality Expectations
 

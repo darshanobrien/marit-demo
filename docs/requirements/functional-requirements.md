@@ -67,6 +67,8 @@ The app should compare each business case with a mocked list of available AI too
 
 Each first-demo report should include:
 
+- Submitted business case context.
+- Executive summary.
 - Feasibility assessment.
 - Relevant AI tools.
 - Key implementation risks.
@@ -74,8 +76,11 @@ Each first-demo report should include:
 - Cons.
 - Recommended next steps.
 - Responsible AI pillar scores and explanations.
-- Review status.
-- AI Builder review notes.
+- Key concerns and mitigation ideas.
+- Non-editable AI Builder review guidance.
+- Deterministic mock analysis disclaimer.
+
+Reports are opened from the Dashboard in the existing shell. A stored browser-session assessment should be used when available; otherwise the deterministic evaluator may generate the report in memory for the selected case.
 
 ## Responsible AI Scoring
 

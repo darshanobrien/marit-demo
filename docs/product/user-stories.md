@@ -18,6 +18,7 @@
 - As an AI Builder, I want lightweight tool-fit and responsible AI risk signals in the list before opening a full report.
 - As an AI Builder, I want to open an AI-generated assessment report so I can review feasibility, risks, and tool fit.
 - As an AI Builder, I want responsible AI pillar scores with explanations so I can identify concerns early.
+- As an AI Builder, I want review guidance in the report so follow-up decisions remain human-led.
 - As an AI Builder, I want to mark an assessment as reviewed so the team can distinguish AI-generated draft content from human-reviewed guidance.
 - As an AI Builder, I want to add review notes so follow-up discovery work is clear.
 

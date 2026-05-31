@@ -669,6 +669,179 @@ textarea.form-control {
   white-space: nowrap;
 }
 
+.report-view {
+  display: grid;
+  gap: 1rem;
+}
+
+.report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.report-disclaimer {
+  border: 1px solid #d89e20;
+  border-left: 0.45rem solid var(--warning);
+  border-radius: 0.5rem;
+  background: #fffbeb;
+  padding: 1rem;
+}
+
+.report-disclaimer h2,
+.report-disclaimer p {
+  margin: 0;
+}
+
+.report-disclaimer h2 {
+  font-size: 1.05rem;
+}
+
+.report-hero,
+.report-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.report-hero h2,
+.report-section h2,
+.report-section h3,
+.report-mini-card h3,
+.pillar-card h3,
+.report-list-card h3,
+.score-card strong,
+.report-hero p,
+.report-section p {
+  margin: 0;
+}
+
+.report-kicker {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.report-hero h2 {
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.report-badge-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.report-meta-grid,
+.report-detail-grid,
+.report-detail-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.report-meta-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.report-detail-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.report-detail-list {
+  grid-template-columns: minmax(9rem, auto) minmax(0, 1fr);
+}
+
+.report-meta-grid dt,
+.report-detail-grid dt,
+.report-detail-list dt {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.report-meta-grid dd,
+.report-detail-grid dd,
+.report-detail-list dd {
+  margin: 0;
+}
+
+.report-section-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.report-section-grid--summary {
+  grid-template-columns: minmax(9rem, 0.55fr) minmax(9rem, 0.55fr) minmax(0, 1.4fr);
+}
+
+.score-card {
+  display: grid;
+  align-content: center;
+  gap: 0.35rem;
+  min-height: 9rem;
+}
+
+.score-card__label {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.score-card__score {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.score-card__level {
+  font-weight: 800;
+}
+
+.report-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.report-mini-card,
+.pillar-card,
+.report-list-card {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: #fbfcfd;
+  padding: 1rem;
+}
+
+.pillar-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.pillar-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pillar-card__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.report-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
 .muted {
   color: var(--text-muted);
 }
@@ -868,6 +1041,19 @@ textarea.form-control {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .report-meta-grid,
+  .report-detail-grid,
+  .report-card-grid,
+  .pillar-card__grid,
+  .report-section-grid,
+  .report-section-grid--summary {
+    grid-template-columns: 1fr;
+  }
+
+  .pillar-card__header {
+    display: grid;
+  }
+
   .filter-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -983,5 +1169,49 @@ textarea.form-control {
 
   .step-list li {
     min-height: auto;
+  }
+}
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .app-header,
+  .sidebar,
+  .badge-row,
+  .page-header,
+  .no-print {
+    display: none !important;
+  }
+
+  .shell-grid {
+    display: block;
+    min-height: auto;
+  }
+
+  .main {
+    padding: 0;
+  }
+
+  .content-stack,
+  .report-view {
+    gap: 0.75rem;
+  }
+
+  .card,
+  .report-disclaimer,
+  .report-mini-card,
+  .pillar-card,
+  .report-list-card {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+
+  .report-section-grid,
+  .report-section-grid--summary,
+  .report-card-grid,
+  .pillar-card__grid {
+    grid-template-columns: 1fr;
   }
 }

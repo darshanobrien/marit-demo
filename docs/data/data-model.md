@@ -74,6 +74,16 @@ The Dashboard uses a derived display model rather than a persisted dashboard ent
 - `ready`, `assessed`, and `reviewed` are treated as assessment-ready display states.
 - Display priority is derived from evaluator score and urgency. It is a triage signal only, not a final recommendation.
 
+## Report Display Model
+
+The Responsible AI report also uses a derived display model:
+
+- A selected business case id resolves against seeded plus browser-session cases.
+- Stored assessments are preferred for submitted browser-session cases.
+- Missing assessments can be generated in memory through `EvaluationService`.
+- Recommended tool ids are joined to the mock AI tool catalogue for names, descriptions, limitations, and complexity.
+- Responsible AI pillar ids are joined to the locked pillar catalogue for names and descriptions.
+
 ## AITool
 
 | Field | Type | Notes |

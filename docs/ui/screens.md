@@ -53,7 +53,7 @@ Key elements:
 - Filters by status, business area, and urgency.
 - Sorting by newest, urgency, or priority/score.
 - CTA to submit a new business case.
-- Disabled “view assessment” action until the full report UI is built.
+- View assessment action opens the selected case in the Assessments / Reports shell view.
 - Empty state if no cases are available.
 
 ## Assessment Report
@@ -70,7 +70,11 @@ Key elements:
 - Pros and cons.
 - Recommended next steps.
 - Responsible AI pillar scores.
-- Review status.
+- Submitted business case details.
+- Key concerns and mitigation ideas.
+- Non-editable AI Builder review context.
+- Deterministic demo disclaimer.
+- Back to dashboard, submit another case, and browser print actions.
 
 ## Print-Friendly Browser Layout
 

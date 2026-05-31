@@ -78,6 +78,7 @@ Deliverables:
 - Links to reports.
 
 Status: Implemented in the Dashboard view with seeded plus browser-session cases, summary metrics, status/readiness display, priority signals, filters, sorting, role-aware columns, and a disabled report action for the future report UI.
+The dashboard report action is now enabled and opens the selected assessment in the Assessments / Reports shell view.
 
 ## 7. Deterministic AI Evaluation Mock Service
 
@@ -103,6 +104,8 @@ Deliverables:
 - Concerns, pros, cons, and mitigations.
 - Risk labels that do not rely on colour alone.
 
+Status: Implemented as the Responsible AI Scoring Report view with all 10 pillars, tool fit, executive summary, submitted case context, pros/cons, concerns, mitigations, reviewer guidance, and deterministic demo disclaimer.
+
 ## 9. AI Builder Review Screen
 
 Goal: Let AI Builders review AI-generated assessments.
@@ -127,6 +130,8 @@ Deliverables:
 - Review notes.
 
 Do not add PDF export for the MVP. Do not prioritize shareable routes unless routing naturally supports them.
+
+Status: Basic browser print styling is implemented for the in-shell report. PDF export remains out of scope.
 
 ## 11. Azure Static Web Apps Deployment
 
@@ -177,4 +182,4 @@ Only start when a task explicitly asks for it. Do not add it as part of the firs
 
 ## Recommended Next Slice
 
-Start with slice 8: Responsible AI Scoring Report.
+Start with slice 9: AI Builder Review Screen.

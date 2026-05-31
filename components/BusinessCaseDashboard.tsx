@@ -30,6 +30,7 @@ type BusinessCaseDashboardProps = {
   locale: Locale;
   role: Role;
   onNavigate: (page: ShellPageKey) => void;
+  onViewAssessment: (businessCaseId: string) => void;
 };
 
 export function BusinessCaseDashboard({
@@ -37,6 +38,7 @@ export function BusinessCaseDashboard({
   locale,
   role,
   onNavigate,
+  onViewAssessment,
 }: BusinessCaseDashboardProps) {
   const [filters, setFilters] = useState<DashboardFilters>(emptyDashboardFilters);
   const [sort, setSort] = useState<DashboardSort>("newest");
@@ -266,8 +268,8 @@ export function BusinessCaseDashboard({
                         )}
                       </td>
                       <td data-label={dashboard.columns.action}>
-                        <Button disabled variant="secondary">
-                          {dashboard.actions.viewAssessmentComingSoon}
+                        <Button onClick={() => onViewAssessment(businessCase.id)} variant="secondary">
+                          {dashboard.actions.viewAssessment}
                         </Button>
                       </td>
                     </tr>

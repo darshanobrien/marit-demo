@@ -3,8 +3,10 @@ import type {
   BusinessCasePriority,
   BusinessCaseStatus,
   DataSensitivityLevel,
+  EvaluationRecommendation,
   EvaluationRiskLevel,
   ExpectedBenefit,
+  ImplementationComplexity,
   IntakeDataSensitivity,
   IntakeUrgency,
 } from "../domain/types";
@@ -117,6 +119,7 @@ export type Dictionary = {
     };
     actions: {
       submitNew: string;
+      viewAssessment: string;
       viewAssessmentComingSoon: string;
     };
     empty: {
@@ -131,6 +134,75 @@ export type Dictionary = {
       riskSummary: string;
       score: string;
       unassignedArea: string;
+    };
+  };
+  report: {
+    emptyTitle: string;
+    emptyBody: string;
+    notFoundTitle: string;
+    notFoundBody: string;
+    demoDisclaimerTitle: string;
+    demoDisclaimerBody: string;
+    sourceStored: string;
+    sourceGenerated: string;
+    printTitle: string;
+    sections: {
+      header: string;
+      executiveSummary: string;
+      submittedCase: string;
+      toolFit: string;
+      responsibleAiScoring: string;
+      prosCons: string;
+      concernsMitigations: string;
+      reviewerContext: string;
+    };
+    fields: {
+      businessArea: string;
+      status: string;
+      urgency: string;
+      readiness: string;
+      created: string;
+      overallScore: string;
+      feasibilityScore: string;
+      confidence: string;
+      recommendation: string;
+      recommendedNextStep: string;
+      painPoint: string;
+      currentProcess: string;
+      desiredOutcome: string;
+      affectedPeople: string;
+      estimatedVolume: string;
+      dataInvolved: string;
+      dataSensitivity: string;
+      currentTools: string;
+      expectedBenefits: string;
+      constraints: string;
+      imaginedAiSolution: string;
+      fitScore: string;
+      implementationComplexity: string;
+      limitations: string;
+      riskScore: string;
+      explanation: string;
+      concerns: string;
+      pros: string;
+      cons: string;
+      mitigationIdeas: string;
+      noValue: string;
+      noTools: string;
+      noItems: string;
+    };
+    confidence: {
+      low: string;
+      medium: string;
+      high: string;
+    };
+    recommendations: Record<EvaluationRecommendation, string>;
+    complexity: Record<ImplementationComplexity, string>;
+    reviewGuidance: string[];
+    actions: {
+      backToDashboard: string;
+      submitAnother: string;
+      print: string;
     };
   };
   intake: {
@@ -368,6 +440,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       },
       actions: {
         submitNew: "Submit new business case",
+        viewAssessment: "View assessment",
         viewAssessmentComingSoon: "View assessment coming soon",
       },
       empty: {
@@ -382,6 +455,91 @@ export const dictionaries: Record<Locale, Dictionary> = {
         riskSummary: "Responsible AI risk",
         score: "Score",
         unassignedArea: "Unassigned",
+      },
+    },
+    report: {
+      emptyTitle: "Select an assessment from the dashboard",
+      emptyBody: "Open the Dashboard and choose a business case to view its Responsible AI scoring report.",
+      notFoundTitle: "Assessment not found",
+      notFoundBody: "The selected business case could not be found in seeded or browser-session data.",
+      demoDisclaimerTitle: "Deterministic demo analysis",
+      demoDisclaimerBody:
+        "This report is generated from mock data and deterministic rules for demo purposes. It is not a production risk decision, approval, or final recommendation.",
+      sourceStored: "Saved assessment",
+      sourceGenerated: "Generated on view",
+      printTitle: "Responsible AI Scoring Report",
+      sections: {
+        header: "Report header",
+        executiveSummary: "Executive summary",
+        submittedCase: "Submitted business case",
+        toolFit: "Tool fit",
+        responsibleAiScoring: "Responsible AI scoring",
+        prosCons: "Pros and cons",
+        concernsMitigations: "Key concerns and mitigations",
+        reviewerContext: "AI Builder review context",
+      },
+      fields: {
+        businessArea: "Business area",
+        status: "Status",
+        urgency: "Urgency",
+        readiness: "Assessment readiness",
+        created: "Created",
+        overallScore: "Overall score",
+        feasibilityScore: "Feasibility score",
+        confidence: "Confidence",
+        recommendation: "Recommendation",
+        recommendedNextStep: "Recommended next step",
+        painPoint: "Pain point",
+        currentProcess: "Current process",
+        desiredOutcome: "Desired outcome",
+        affectedPeople: "Who is affected",
+        estimatedVolume: "Estimated volume/frequency",
+        dataInvolved: "Data involved",
+        dataSensitivity: "Data sensitivity",
+        currentTools: "Current tools/systems",
+        expectedBenefits: "Expected benefits",
+        constraints: "Constraints or concerns",
+        imaginedAiSolution: "Imagined AI solution",
+        fitScore: "Fit score",
+        implementationComplexity: "Implementation complexity",
+        limitations: "Limitations",
+        riskScore: "Risk score",
+        explanation: "Explanation",
+        concerns: "Concerns",
+        pros: "Positive indicators",
+        cons: "Risks or caveats",
+        mitigationIdeas: "Mitigation ideas",
+        noValue: "Not provided",
+        noTools: "No recommended tool fit yet",
+        noItems: "No items listed",
+      },
+      confidence: {
+        low: "Low",
+        medium: "Medium",
+        high: "High",
+      },
+      recommendations: {
+        proceedToDiscovery: "Proceed to discovery",
+        clarifyBusinessNeed: "Clarify business need",
+        prototypeCandidate: "Prototype candidate",
+        needsRiskReview: "Needs risk review",
+        notRecommendedYet: "Not recommended yet",
+      },
+      complexity: {
+        low: "Low",
+        medium: "Medium",
+        high: "High",
+      },
+      reviewGuidance: [
+        "Review the generated assessment before making decisions.",
+        "Confirm tool fit with technical owners.",
+        "Validate data sensitivity and risk assumptions.",
+        "Decide whether to prototype, request more information, defer, or decline.",
+      ],
+      actions: {
+        backToDashboard: "Back to dashboard",
+        submitAnother: "Submit another business case",
+        print: "Print report",
       },
     },
     intake: {
@@ -718,6 +876,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       },
       actions: {
         submitNew: "Soumettre un nouveau dossier",
+        viewAssessment: "Voir l'évaluation",
         viewAssessmentComingSoon: "Évaluation à venir",
       },
       empty: {
@@ -732,6 +891,91 @@ export const dictionaries: Record<Locale, Dictionary> = {
         riskSummary: "Risque IA responsable",
         score: "Score",
         unassignedArea: "Non assigné",
+      },
+    },
+    report: {
+      emptyTitle: "Sélectionnez une évaluation dans le tableau de bord",
+      emptyBody: "Ouvrez le tableau de bord et choisissez un dossier d'affaires pour voir son rapport de notation IA responsable.",
+      notFoundTitle: "Évaluation introuvable",
+      notFoundBody: "Le dossier d'affaires sélectionné est introuvable dans les données fictives ou de session du navigateur.",
+      demoDisclaimerTitle: "Analyse déterministe de démonstration",
+      demoDisclaimerBody:
+        "Ce rapport est généré à partir de données fictives et de règles déterministes à des fins de démonstration. Il ne constitue pas une décision de risque, une approbation ni une recommandation finale de production.",
+      sourceStored: "Évaluation enregistrée",
+      sourceGenerated: "Générée à l'ouverture",
+      printTitle: "Rapport de notation IA responsable",
+      sections: {
+        header: "En-tête du rapport",
+        executiveSummary: "Résumé exécutif",
+        submittedCase: "Dossier d'affaires soumis",
+        toolFit: "Adéquation des outils",
+        responsibleAiScoring: "Notation IA responsable",
+        prosCons: "Avantages et inconvénients",
+        concernsMitigations: "Principales préoccupations et mesures d'atténuation",
+        reviewerContext: "Contexte de révision du constructeur IA",
+      },
+      fields: {
+        businessArea: "Secteur",
+        status: "Statut",
+        urgency: "Urgence",
+        readiness: "État de l'évaluation",
+        created: "Créée le",
+        overallScore: "Score global",
+        feasibilityScore: "Score de faisabilité",
+        confidence: "Confiance",
+        recommendation: "Recommandation",
+        recommendedNextStep: "Prochaine étape recommandée",
+        painPoint: "Problème",
+        currentProcess: "Processus actuel",
+        desiredOutcome: "Résultat souhaité",
+        affectedPeople: "Personnes touchées",
+        estimatedVolume: "Volume/fréquence estimés",
+        dataInvolved: "Données concernées",
+        dataSensitivity: "Sensibilité des données",
+        currentTools: "Outils/systèmes actuels",
+        expectedBenefits: "Bénéfices attendus",
+        constraints: "Contraintes ou préoccupations",
+        imaginedAiSolution: "Solution IA imaginée",
+        fitScore: "Score d'adéquation",
+        implementationComplexity: "Complexité de mise en œuvre",
+        limitations: "Limites",
+        riskScore: "Score de risque",
+        explanation: "Explication",
+        concerns: "Préoccupations",
+        pros: "Indicateurs positifs",
+        cons: "Risques ou réserves",
+        mitigationIdeas: "Mesures d'atténuation",
+        noValue: "Non fourni",
+        noTools: "Aucune adéquation d'outil recommandée pour l'instant",
+        noItems: "Aucun élément indiqué",
+      },
+      confidence: {
+        low: "Faible",
+        medium: "Moyenne",
+        high: "Élevée",
+      },
+      recommendations: {
+        proceedToDiscovery: "Passer à la découverte",
+        clarifyBusinessNeed: "Clarifier le besoin d'affaires",
+        prototypeCandidate: "Candidat au prototype",
+        needsRiskReview: "Révision des risques requise",
+        notRecommendedYet: "Non recommandé pour l'instant",
+      },
+      complexity: {
+        low: "Faible",
+        medium: "Moyenne",
+        high: "Élevée",
+      },
+      reviewGuidance: [
+        "Révisez l'évaluation générée avant de prendre des décisions.",
+        "Confirmez l'adéquation des outils avec les responsables techniques.",
+        "Validez la sensibilité des données et les hypothèses de risque.",
+        "Décidez s'il faut prototyper, demander plus d'information, reporter ou refuser.",
+      ],
+      actions: {
+        backToDashboard: "Retour au tableau de bord",
+        submitAnother: "Soumettre un autre dossier",
+        print: "Imprimer le rapport",
       },
     },
     intake: {

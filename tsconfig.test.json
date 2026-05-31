@@ -15,6 +15,7 @@
     "lib/data/**/*.ts",
     "lib/evaluation/**/*.ts",
     "lib/intake/**/*.ts",
+    "lib/report/**/*.ts",
     "tests/**/*.ts"
   ]
 }
