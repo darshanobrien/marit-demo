@@ -38,8 +38,10 @@ AI Builder:
 
 Admin:
 
-- Can use simulated demo navigation for Admin-oriented placeholders.
+- Can use simulated demo navigation for AI tools catalogue management.
 - Would manage tools, pillars, and system settings in production.
+
+The Admin tools page is role-aware in the prototype shell, but this remains client-side simulation. Production must enforce Admin authorization on the server before catalogue changes are trusted or persisted.
 
 Guest or external access is not part of the first production assumption. It may be considered later as an extension.
 

@@ -11,6 +11,7 @@
   },
   "include": [
     "lib/domain/**/*.ts",
+    "lib/admin/**/*.ts",
     "lib/dashboard/**/*.ts",
     "lib/data/**/*.ts",
     "lib/evaluation/**/*.ts",

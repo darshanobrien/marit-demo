@@ -38,6 +38,39 @@ export type EvaluationRecommendation =
   | "prototypeCandidate"
   | "needsRiskReview"
   | "notRecommendedYet";
+export type AIToolInputType =
+  | "text"
+  | "documents"
+  | "images"
+  | "structuredData"
+  | "email"
+  | "code"
+  | "audio";
+export type AIToolOutputType =
+  | "text"
+  | "classification"
+  | "summary"
+  | "extractedData"
+  | "recommendations"
+  | "generatedContent";
+export type AIToolDeploymentModel =
+  | "saas"
+  | "internalPlatform"
+  | "azureService"
+  | "localPrivate"
+  | "approvedVendor";
+export type AIToolDataSensitivitySuitability =
+  | "public"
+  | "internal"
+  | "confidential"
+  | "restricted";
+export type AIToolIntegrationOption =
+  | "api"
+  | "uiOnly"
+  | "microsoft365"
+  | "workflowAutomation"
+  | "customConnector";
+export type AIToolStatus = "available" | "pilot" | "restricted" | "deprecated";
 
 export type AIToolCapability =
   | "documentExtraction"
@@ -99,9 +132,24 @@ export type AIToolRiskProfile = {
 export type AITool = {
   id: string;
   name: string;
+  provider: string;
   shortDescription: string;
   capabilities: AIToolCapability[];
   suitableUseCases: string[];
+  supportedInputTypes: AIToolInputType[];
+  supportedOutputTypes: AIToolOutputType[];
+  deploymentModel: AIToolDeploymentModel;
+  dataSensitivitySuitability: AIToolDataSensitivitySuitability[];
+  integrationOptions: AIToolIntegrationOption[];
+  supportedLanguages: {
+    english: boolean;
+    french: boolean;
+  };
+  accessibilityConsiderations: string;
+  responsibleAiNotes: string;
+  securityPrivacyNotes: string;
+  status: AIToolStatus;
+  lastReviewedAt: string;
   limitations: string[];
   riskProfile: AIToolRiskProfile;
   implementationComplexity: ImplementationComplexity;

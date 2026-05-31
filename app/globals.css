@@ -507,6 +507,20 @@ textarea.form-control {
   color: var(--text-muted);
 }
 
+.dashboard-intro h2 {
+  margin: 0 0 0.25rem;
+}
+
+.admin-tools {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-tools-list {
+  display: grid;
+  gap: 1rem;
+}
+
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -583,6 +597,10 @@ textarea.form-control {
   min-width: 78rem;
   border-collapse: collapse;
   font-size: 0.92rem;
+}
+
+.ai-tools-table {
+  min-width: 86rem;
 }
 
 .case-table caption {

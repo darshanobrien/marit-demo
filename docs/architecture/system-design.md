@@ -58,7 +58,7 @@ Roles are simulated at first, but the app should keep role-aware flows:
 
 - Business User: intake and own submissions.
 - AI Builder: prioritization, report review, notes.
-- Admin: simulated role for demo navigation; configuration features remain deferred.
+- Admin: simulated role for AI tools catalogue management in browser-session storage.
 
 ## Data Flow
 
@@ -67,12 +67,13 @@ Roles are simulated at first, but the app should keep role-aware flows:
 3. The evaluation service generates a draft assessment.
 4. AI Builder opens the report and reviews it.
 5. Review status and notes are stored in mock state for the demo.
+6. Admin can add AI tools to the browser-session catalogue; seeded tools remain the baseline.
 
 ## Key Constraints
 
 - No real authentication day one.
 - No real database day one.
 - No real AI calls day one.
-- No Admin configuration UI unless explicitly requested.
+- Admin configuration remains limited to the AI tools catalogue until explicitly expanded.
 - No client data.
 - No paid services unless justified by a specific task.

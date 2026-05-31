@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AdminAiToolsPage } from "@/components/AdminAiToolsPage";
 import { Badge } from "@/components/Badge";
 import { BusinessCaseAssessmentReport } from "@/components/BusinessCaseAssessmentReport";
 import { BusinessCaseDashboard } from "@/components/BusinessCaseDashboard";
@@ -20,6 +21,7 @@ import {
   type Role,
   type ShellPageKey,
 } from "@/lib/i18n/dictionaries";
+import { canAccessAdminTools, visiblePagesForRole } from "@/lib/admin/aiToolManagement";
 
 const pageOrder: PageKey[] = ["home", "dashboard", "submit", "assessments", "adminTools"];
 const roleOrder: Role[] = ["businessUser", "aiBuilder", "admin"];
@@ -31,10 +33,17 @@ export function AppShell() {
   const [selectedBusinessCaseId, setSelectedBusinessCaseId] = useState<string | null>(null);
   const dictionary = dictionaries[locale];
   const page = activePage === "home" ? null : dictionary.pages[activePage];
+  const visiblePages = visiblePagesForRole(pageOrder, role);
 
   useEffect(() => {
     document.documentElement.lang = locale;
   }, [locale]);
+
+  useEffect(() => {
+    if (activePage === "adminTools" && !canAccessAdminTools(role)) {
+      setActivePage("dashboard");
+    }
+  }, [activePage, role]);
 
   return (
     <div className="app-shell">
@@ -85,7 +94,7 @@ export function AppShell() {
         <aside className="sidebar">
           <nav aria-label={dictionary.app.name}>
             <ul className="nav-list">
-              {pageOrder.map((pageKey) => (
+              {visiblePages.map((pageKey) => (
                 <li key={pageKey}>
                   <button
                     aria-current={activePage === pageKey ? "page" : undefined}
@@ -118,12 +127,22 @@ export function AppShell() {
                       {dictionary.badges.rolePrefix}: {dictionary.roles[role]}
                     </Badge>
                     <Badge variant="status">{dictionary.badges.mockData}</Badge>
-                    {activePage === "submit" || activePage === "dashboard" ? null : (
+                    {activePage === "submit" || activePage === "dashboard" || activePage === "adminTools" ? null : (
                       <Badge>{dictionary.badges.shellOnly}</Badge>
                     )}
                   </div>
 
-                  {activePage === "dashboard" ? (
+                  {activePage === "adminTools" && !canAccessAdminTools(role) ? (
+                    <Card>
+                      <h2>{dictionary.adminTools.accessDeniedTitle}</h2>
+                      <p className="muted">{dictionary.adminTools.accessDeniedBody}</p>
+                      <div className="actions">
+                        <Button onClick={() => setActivePage("dashboard")} variant="secondary">
+                          {dictionary.adminTools.actions.backToDashboard}
+                        </Button>
+                      </div>
+                    </Card>
+                  ) : activePage === "dashboard" ? (
                     <BusinessCaseDashboard
                       dictionary={dictionary}
                       locale={locale}
@@ -146,6 +165,12 @@ export function AppShell() {
                       selectedBusinessCaseId={selectedBusinessCaseId}
                       onBackToDashboard={() => setActivePage("dashboard")}
                       onSubmitAnother={() => setActivePage("submit")}
+                    />
+                  ) : activePage === "adminTools" ? (
+                    <AdminAiToolsPage
+                      dictionary={dictionary}
+                      locale={locale}
+                      onBackToDashboard={() => setActivePage("dashboard")}
                     />
                   ) : (
                     <>

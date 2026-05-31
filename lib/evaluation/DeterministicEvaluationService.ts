@@ -24,6 +24,25 @@ type SignalProfile = {
   sensitivityRisk: number;
 };
 
+type PillarContent = {
+  explanation: string;
+  concerns: string[];
+  pros: string[];
+  cons: string[];
+  mitigationIdeas: string[];
+};
+
+type CaseContext = {
+  title: string;
+  affectedUsers: string;
+  dataSources: string;
+  primaryDataSource: string;
+  currentProcess: string;
+  desiredOutcome: string;
+  constraints: string;
+  toolFit: string;
+};
+
 const capabilityKeywords: Record<AIToolCapability, string[]> = {
   documentExtraction: ["document", "field", "extract", "invoice", "contract", "form", "file"],
   knowledgeSearch: ["search", "find", "lookup", "knowledge", "source", "research"],
@@ -125,7 +144,7 @@ function recommendTools(
 
       return {
         toolId: tool.id,
-        fitScore: score(fitValue, `${tool.name} fit is based on capability keywords, data readiness, and demo risk fit.`, true),
+        fitScore: score(fitValue, `${tool.name} fit is based on capability signals, data readiness, and risk fit.`, true),
         rationale: `${tool.name} is relevant because it supports ${tool.capabilities.join(", ")} and matches the submitted pain point signals.`,
         limitations: tool.limitations.slice(0, 2),
       };
@@ -150,13 +169,13 @@ function buildFeasibility(
   ];
 
   return {
-    score: score(value, "Feasibility reflects clarity, data readiness, tool fit, and demo risk constraints.", true),
+    score: score(value, "Feasibility reflects clarity, data readiness, tool fit, and risk constraints.", true),
     summary:
       value >= 70
-        ? "The opportunity looks feasible for a weekend-demo assessment with mock data and human review."
-        : "The opportunity needs more discovery before it is a strong demo candidate.",
+        ? "The opportunity appears feasible for structured discovery, provided the AI Lab confirms data access, controls, and human review expectations."
+        : "The opportunity needs more discovery before it is a strong prototype candidate.",
     positiveSignals: [
-      `${businessCase.knownDataSources.length} known mock data source(s) were identified.`,
+      `${businessCase.knownDataSources.length} relevant data source(s) were identified.`,
       recommendedTools.length > 0
         ? `${recommendedTools.length} relevant AI tool recommendation(s) were found.`
         : "No strong tool match was found yet.",
@@ -173,37 +192,26 @@ function assessPillar(
 ): PillarAssessment {
   const riskValue = riskForPillar(pillar.id, businessCase, profile, recommendedTools);
   const level = riskLevel(riskValue);
+  const content = contentForPillar(pillar.id, pillar.name, businessCase, recommendedTools);
 
   return {
     pillarId: pillar.id,
-    riskScore: score(riskValue, `${pillar.name} risk is deterministically estimated from sensitivity, clarity, data, and tool-fit signals.`),
-    explanation: explanationForPillar(pillar.name, riskValue, businessCase),
-    concerns: [
-      {
-        id: `${pillar.id}-concern`,
-        severity: level,
-        description:
-          riskValue >= 50
-            ? `Review ${pillar.name.toLowerCase()} before prototyping this opportunity.`
-            : `${pillar.name} appears manageable for a mock-data demo with human review.`,
-      },
-    ],
-    pros: [
-      {
-        id: `${pillar.id}-pro`,
-        description: "The demo keeps AI analytical only and keeps AI Builder review in the loop.",
-      },
-    ],
-    cons: [
-      {
-        id: `${pillar.id}-con`,
-        description:
-          businessCase.dataSensitivity === "high"
-            ? "High data sensitivity increases review expectations even with mock data."
-            : "Production use would need stronger evidence than the weekend demo provides.",
-      },
-    ],
-    mitigationIdeas: mitigationForPillar(pillar.id, businessCase),
+    riskScore: score(riskValue, `${pillar.name} risk is estimated from sensitivity, clarity, data readiness, and tool-fit signals.`),
+    explanation: content.explanation,
+    concerns: content.concerns.map((description, index) => ({
+      id: `${pillar.id}-concern-${index + 1}`,
+      severity: level,
+      description,
+    })),
+    pros: content.pros.map((description, index) => ({
+      id: `${pillar.id}-pro-${index + 1}`,
+      description,
+    })),
+    cons: content.cons.map((description, index) => ({
+      id: `${pillar.id}-con-${index + 1}`,
+      description,
+    })),
+    mitigationIdeas: content.mitigationIdeas,
   };
 }
 
@@ -218,7 +226,7 @@ function buildConcerns(
     concerns.push({
       id: "concern-data-sensitivity",
       severity: businessCase.dataSensitivity === "high" ? "high" : "moderate",
-      description: "Data sensitivity requires clear mock-data boundaries and future access controls.",
+      description: "Data sensitivity requires clear access, minimization, and retention controls.",
     });
   }
 
@@ -284,8 +292,8 @@ function buildCons(
 ): EvaluationProCon[] {
   return [
     {
-      id: "con-demo-only",
-      description: "The current assessment uses mock data and deterministic rules, not production evidence.",
+      id: "con-validation-needed",
+      description: "The current assessment is based on intake details and rule-based scoring, so it should be validated through discovery before decisions are made.",
     },
     {
       id: "con-risk-review",
@@ -304,12 +312,12 @@ function buildCons(
 
 function buildMitigations(businessCase: BusinessCase, profile: SignalProfile): string[] {
   return [
-    "Use mock or masked data for all prototype work.",
+    "Start with approved, minimized, or redacted representative examples before using operational records.",
     "Require AI Builder review before sharing assessment conclusions.",
     "Define success measures before building a prototype.",
     profile.sensitivityRisk >= 65
       ? "Confirm privacy, access, and retention expectations before any production design."
-      : "Document why data sensitivity is manageable for the demo.",
+      : "Document why data sensitivity is manageable and which controls are still required.",
   ];
 }
 
@@ -340,7 +348,7 @@ function chooseRecommendation(
 function nextStepFor(recommendation: EvaluationRecommendation): string {
   switch (recommendation) {
     case "prototypeCandidate":
-      return "Schedule an AI Lab discovery session and prepare a small mock-data prototype plan.";
+      return "Schedule an AI Lab discovery session and prepare a constrained prototype plan with approved data and controls.";
     case "proceedToDiscovery":
       return "Run a short discovery session to confirm data, users, controls, and success measures.";
     case "needsRiskReview":
@@ -391,27 +399,299 @@ function riskForPillar(
   return clamp(Math.round(baseByPillar[pillarId] ?? 45));
 }
 
-function explanationForPillar(pillarName: string, riskValue: number, businessCase: BusinessCase): string {
-  const level = riskLevel(riskValue);
-  return `${pillarName} is assessed as ${level} risk for "${businessCase.title}" using deterministic demo scoring.`;
+function contentForPillar(
+  pillarId: string,
+  pillarName: string,
+  businessCase: BusinessCase,
+  recommendedTools: ToolRecommendation[],
+): PillarContent {
+  const context = buildCaseContext(businessCase, recommendedTools);
+  const sensitivityText =
+    businessCase.dataSensitivity === "high"
+      ? "The request involves higher-sensitivity information, so access, retention, and data minimization controls would need to be defined early."
+      : businessCase.dataSensitivity === "unknown"
+        ? "The request does not yet establish data sensitivity, so discovery should confirm what information is actually needed."
+        : "The stated data sensitivity appears manageable, but the AI Lab should still confirm the fields and records needed before piloting.";
+
+  switch (pillarId) {
+    case "human-oversight":
+      return {
+        explanation: `${context.title} would support ${context.affectedUsers} by suggesting classifications, priorities, or draft outputs connected to ${context.desiredOutcome}. Human oversight matters because the output could influence sequencing, escalation, or follow-up work even when the system is advisory.`,
+        concerns: [
+          `The current process (${context.currentProcess}) should define exactly where human review occurs and who can override the AI suggestion.`,
+          "Reviewers may over-trust repeated recommendations if confidence, rationale, and uncertainty are not visible.",
+          "Escalation paths are not fully defined for ambiguous, high-impact, or sensitive cases.",
+        ],
+        pros: [
+          "The desired outcome is decision support rather than autonomous execution.",
+          context.constraints,
+          "A structured review step can capture disagreements and improve evaluation criteria before piloting.",
+        ],
+        cons: [
+          "Human review alone is not sufficient unless reviewers have enough context, time, and authority to challenge the output.",
+          "If review queues are high volume, oversight quality may degrade without sampling, escalation, and audit expectations.",
+        ],
+        mitigationIdeas: [
+          "Define which role reviews AI output, which actions require explicit approval, and which cases must be escalated.",
+          "Show rationale, confidence, and source signals beside each recommendation.",
+          "Track reviewer overrides and disagreement reasons during pilot evaluation.",
+          "Keep the system advisory until quality thresholds and operating procedures are validated.",
+        ],
+      };
+    case "fairness-non-discrimination":
+      return {
+        explanation: `${pillarName} matters because the request could shape how work, attention, or service quality is distributed across requestors, teams, or topics. The AI Lab should confirm whether any protected or sensitive attributes could appear directly or indirectly in ${context.primaryDataSource}.`,
+        concerns: [
+          "Historical routing, triage, or quality patterns may encode inconsistent treatment across teams or request types.",
+          "Free-text descriptions can include names, roles, locations, or other proxies that should not influence prioritization.",
+          "Urgency or fit labels may disadvantage less common request patterns if evaluation data is not representative.",
+        ],
+        pros: [
+          "Using approved categories and guidelines can reduce ad hoc judgement if the taxonomy is well governed.",
+          "Human review can identify edge cases where the suggested category or priority appears unfair or unsupported.",
+          "A pilot can compare AI suggestions against reviewer decisions before the workflow affects service outcomes.",
+        ],
+        cons: [
+          "Fairness risk depends on the distribution and history of source records, which should be validated before piloting.",
+          "A narrow sample of examples may make the solution appear more consistent than it would be across real operating conditions.",
+        ],
+        mitigationIdeas: [
+          "Review the proposed taxonomy for categories that could create unequal treatment or hidden proxies.",
+          "Evaluate performance across request types, business areas, and urgency levels.",
+          "Exclude fields that are not justified for the task, especially names or attributes unrelated to routing quality.",
+          "Document an appeal or correction path for users affected by incorrect classification.",
+        ],
+      };
+    case "privacy-data-protection":
+      return {
+        explanation: `This request would likely process ${context.dataSources}. Privacy risk is driven not only by intended classification fields, but also by incidental information that can appear in free text, attachments, comments, or historical records.`,
+        concerns: [
+          `${context.primaryDataSource} may include personal information, confidential business context, or content unrelated to the task.`,
+          "The request does not yet define which fields are necessary for classification versus which should be excluded, masked, or summarized.",
+          "Retention expectations for prompts, examples, evaluation sets, and generated classifications should be defined before piloting.",
+          sensitivityText,
+        ],
+        pros: [
+          "The intended use is analytical support and can likely begin with minimized examples.",
+          "Existing process guidance may help constrain the output to approved categories and reduce unnecessary data exposure.",
+          "Keeping final decisions with accountable staff provides a checkpoint for sensitive or unusual requests.",
+        ],
+        cons: [
+          "Free-text operational data can contain more sensitive information than expected.",
+          "Data minimization will be important; the solution may not need full message bodies, attachments, or complete records for every scenario.",
+          "Access controls for the AI workflow must align with source-system permissions.",
+        ],
+        mitigationIdeas: [
+          "Define an approved field list before prototyping.",
+          "Use redacted, minimized, or synthetic examples for early evaluation where feasible.",
+          "Exclude attachments and unrelated free-text fields unless a specific need is justified.",
+          "Define retention, access, and audit expectations for prompts, examples, and generated outputs.",
+          "Add a pre-processing step to detect and mask sensitive content where feasible.",
+        ],
+      };
+    case "security-robustness":
+      return {
+        explanation: `${context.title} would introduce an AI-assisted layer around ${context.dataSources}. Security and robustness matter because source content could be incomplete, manipulated, or include instructions that should not affect the system's behavior.`,
+        concerns: [
+          "Free-text inputs may include prompt-injection-style instructions, copied content, or malformed records.",
+          "The workflow should prevent generated recommendations from exposing source data to users who lack permission.",
+          "System failure modes are not yet defined for missing fields, conflicting categories, or unavailable source systems.",
+        ],
+        pros: [
+          "The proposed output can be constrained to classification, prioritization, and rationale rather than direct system action.",
+          "Existing source systems and guidelines can provide boundaries for allowed categories and routing options.",
+          "A staged pilot can test robustness against edge cases before broader use.",
+        ],
+        cons: [
+          "Security controls must cover both input handling and generated output, especially where records contain sensitive context.",
+          "Robustness depends on clear fallback behavior when confidence is low or inputs are ambiguous.",
+        ],
+        mitigationIdeas: [
+          "Constrain model instructions and outputs to an approved schema with allowed categories.",
+          "Strip or ignore user-provided instructions embedded in source records.",
+          "Apply source-system access controls to both input records and generated outputs.",
+          "Define fallback behavior for low-confidence, malformed, or policy-sensitive cases.",
+          "Test adversarial and unusual examples before piloting.",
+        ],
+      };
+    case "transparency-explainability":
+      return {
+        explanation: `${context.affectedUsers} would need to understand why Marit recommends a category, priority, tool fit, or next step. Transparency is important because reviewers must be able to challenge the suggestion without reconstructing the analysis from scratch.`,
+        concerns: [
+          "The request does not yet specify what rationale should be shown to reviewers or requestors.",
+          "If only a label or score is shown, reviewers may not know which inputs influenced the recommendation.",
+          "Explanations may become misleading if they are too generic or do not cite the relevant business facts.",
+        ],
+        pros: [
+          "The business case includes a clear pain point and desired outcome that can anchor explanations.",
+          "Structured categories and guidelines can make rationale easier to review.",
+          "Reviewers can compare the AI rationale against existing process expectations.",
+        ],
+        cons: [
+          "Explanations should not imply certainty beyond the available intake details and representative data.",
+          "A score without supporting evidence may create a false sense of precision.",
+        ],
+        mitigationIdeas: [
+          "Show the main evidence used for each recommendation, such as category signals, urgency indicators, and data gaps.",
+          "Label AI output clearly as advisory and subject to AI Builder review.",
+          "Include confidence or uncertainty notes where inputs are incomplete.",
+          "Use consistent explanation templates so reviewers can compare cases fairly.",
+        ],
+      };
+    case "accountability-governance":
+      return {
+        explanation: `${context.title} would require clear ownership across the business area, AI Lab, data owners, and any tool owners involved in ${context.toolFit}. Governance matters because the assessment may influence prioritization and future prototype decisions.`,
+        concerns: [
+          "Accountable owners for data, model behavior, reviewer decisions, and operational outcomes are not fully defined.",
+          "The handoff between business requestor, AI Builder, and technical owner should be clarified before piloting.",
+          "Ongoing monitoring responsibilities would need to be assigned if the solution moves beyond discovery.",
+        ],
+        pros: [
+          "The request is structured enough to identify likely business and AI Lab owners.",
+          "Existing process constraints can be converted into governance checkpoints.",
+          "The AI Builder review step creates a natural control point before prototype approval.",
+        ],
+        cons: [
+          "Governance gaps can lead to unclear responsibility when outputs are wrong, disputed, or outdated.",
+          "A pilot without documented ownership may be difficult to evaluate or retire safely.",
+        ],
+        mitigationIdeas: [
+          "Name accountable business, AI Lab, data, and tool owners before prototyping.",
+          "Define review criteria, sign-off expectations, and escalation paths.",
+          "Document what the system is allowed to recommend and what remains outside scope.",
+          "Set monitoring and revalidation expectations before production use.",
+        ],
+      };
+    case "legal-regulatory-compliance":
+      return {
+        explanation: `${pillarName} should be considered because ${context.title} may affect operational handling, prioritization, communications, or records management. The AI Lab should confirm applicable policy, regulatory, contractual, and retention requirements before piloting.`,
+        concerns: [
+          "The request does not yet identify all policies or obligations that govern the source records and generated outputs.",
+          "If recommendations influence urgency or routing, auditability and dispute handling may be required.",
+          "Generated summaries or categories may become business records depending on how they are stored and used.",
+        ],
+        pros: [
+          "The solution can remain advisory while legal, compliance, and policy constraints are clarified.",
+          "Existing routing guidelines and process documentation can help define allowed outputs.",
+          "Human review provides a point to catch cases requiring specialist interpretation.",
+        ],
+        cons: [
+          "The assessment should not be treated as legal or regulatory approval.",
+          "Compliance expectations may vary by data source, geography, business area, or record type.",
+        ],
+        mitigationIdeas: [
+          "Confirm applicable policies, retention rules, and audit obligations with accountable owners.",
+          "Define whether generated classifications or summaries become records of decision.",
+          "Include escalation criteria for cases that require legal, compliance, privacy, or risk review.",
+          "Keep output advisory until compliance obligations and controls are validated.",
+        ],
+      };
+    case "data-quality-provenance":
+      return {
+        explanation: `${context.title} depends on the quality and representativeness of ${context.dataSources}. Data quality and provenance matter because inconsistent labels, incomplete records, or outdated guidelines could directly affect classification and prioritization quality.`,
+        concerns: [
+          "Historical records may reflect inconsistent categorization or routing practices from the current process.",
+          "The request does not yet define a representative evaluation set or quality benchmark.",
+          "Source lineage should be clear enough to explain where each recommendation came from.",
+        ],
+        pros: [
+          `${businessCase.knownDataSources.length} source area(s) have been identified, which gives discovery a practical starting point.`,
+          "Existing guidelines may provide a reference taxonomy for evaluation.",
+          "Reviewer overrides can create useful feedback about label quality and ambiguous cases.",
+        ],
+        cons: [
+          "Poor source labels could make the AI appear consistent while reproducing historical inconsistency.",
+          "A narrow sample may miss rare, sensitive, or high-impact request types.",
+        ],
+        mitigationIdeas: [
+          "Profile source examples for missing fields, duplicates, conflicting labels, and outdated categories.",
+          "Create a representative evaluation set reviewed by business owners.",
+          "Document source provenance and version of any guideline used for classification.",
+          "Track data-quality gaps separately from model-quality issues during pilot evaluation.",
+        ],
+      };
+    case "reliability-performance":
+      return {
+        explanation: `${context.affectedUsers} would rely on the solution to provide consistent, timely, and reviewable support for ${context.desiredOutcome}. Reliability risk depends on how often recommendations are wrong, delayed, incomplete, or difficult to override.`,
+        concerns: [
+          "Quality thresholds for acceptable classification, prioritization, or summarization have not been defined.",
+          "The workflow should specify what happens when confidence is low or recommended tools disagree.",
+          "Performance expectations may differ during peak volume, urgent requests, or unusual categories.",
+        ],
+        pros: [
+          "The requested output can be evaluated against reviewer decisions before it affects downstream actions.",
+          "A constrained taxonomy and clear success measures can make reliability measurable.",
+          "The AI Lab can compare recommendations to current process outcomes during discovery.",
+        ],
+        cons: [
+          "Reliability cannot be inferred from intake details alone; it should be validated with representative, approved data.",
+          "High urgency may amplify the impact of incorrect recommendations if reviewers are under time pressure.",
+        ],
+        mitigationIdeas: [
+          "Define quality metrics such as category accuracy, urgency agreement, reviewer override rate, and time saved.",
+          "Set confidence thresholds and fallback behavior for uncertain cases.",
+          "Pilot with a parallel-run period before relying on recommendations operationally.",
+          "Monitor errors by request type and urgency level.",
+        ],
+      };
+    case "social-environmental-reputational-impact":
+      return {
+        explanation: `${pillarName} is relevant because ${context.title} could affect stakeholder trust, service quality, workload distribution, and perceptions of how AI is used in internal processes.`,
+        concerns: [
+          "Users may perceive prioritization suggestions as final decisions if the advisory nature is not clear.",
+          "Incorrect or unexplained recommendations could reduce trust in the AI Lab and the underlying business process.",
+          "Workload or service impacts should be considered if the tool changes which requests receive attention first.",
+        ],
+        pros: [
+          "The request aims to improve consistency and reduce manual effort rather than replace accountable staff.",
+          "Keeping reviewers involved can support trust if outputs are transparent and correctable.",
+          "A focused pilot can gather stakeholder feedback before broader rollout.",
+        ],
+        cons: [
+          "Perceived unfairness or opacity can create reputational risk even if the technical model performs well.",
+          "Efficiency gains should be balanced against user experience and accountability expectations.",
+        ],
+        mitigationIdeas: [
+          "Communicate that AI output is advisory and reviewed by accountable staff.",
+          "Collect feedback from affected users during pilot evaluation.",
+          "Monitor whether recommendations shift response quality or workload in unintended ways.",
+          "Define success measures that include quality, trust, and operational impact, not only time savings.",
+        ],
+      };
+    default:
+      return {
+        explanation: `${pillarName} should be reviewed for ${context.title} because the request may affect business decisions, data handling, or operational workflows.`,
+        concerns: ["The specific control expectations for this pillar should be clarified before piloting."],
+        pros: ["The structured intake provides a starting point for AI Builder review."],
+        cons: ["Additional discovery is needed before production use."],
+        mitigationIdeas: ["Define review criteria, ownership, and controls before piloting."],
+      };
+  }
 }
 
-function mitigationForPillar(pillarId: string, businessCase: BusinessCase): string[] {
-  const common = "Keep a human reviewer accountable for final interpretation.";
-  const byPillar: Record<string, string> = {
-    "human-oversight": "Define which AI Builder reviews and signs off on the assessment.",
-    "fairness-non-discrimination": "Check whether routing, classification, or prioritization could affect groups unfairly.",
-    "privacy-data-protection": "Use mock, masked, or minimized data during prototype work.",
-    "security-robustness": "Document prompt injection, access, and data leakage controls before production.",
-    "transparency-explainability": "Show users when content is AI-generated and provide clear rationale.",
-    "accountability-governance": "Assign accountable business and AI Lab owners before prototyping.",
-    "legal-regulatory-compliance": "Confirm policy and regulatory constraints with accountable owners.",
-    "data-quality-provenance": "Validate representative data samples and document source provenance.",
-    "reliability-performance": "Define quality checks and acceptable failure modes before pilot use.",
-    "social-environmental-reputational-impact": "Consider stakeholder trust and reputational impact before scaling.",
+function buildCaseContext(
+  businessCase: BusinessCase,
+  recommendedTools: ToolRecommendation[],
+): CaseContext {
+  return {
+    title: `"${businessCase.title}"`,
+    affectedUsers: businessCase.affectedPeople ?? businessCase.expectedUsers ?? "the affected business users",
+    dataSources:
+      businessCase.knownDataSources.length > 0
+        ? businessCase.knownDataSources.join(", ")
+        : "the relevant business records",
+    primaryDataSource: businessCase.knownDataSources[0] ?? "the source records",
+    currentProcess: businessCase.currentProcess ?? "the current manual process",
+    desiredOutcome: businessCase.desiredOutcome,
+    constraints:
+      businessCase.constraints && businessCase.constraints.length > 0
+        ? `The request already notes constraints that should inform controls: ${businessCase.constraints.join("; ")}.`
+        : "The intake should be expanded to capture explicit constraints and control expectations.",
+    toolFit:
+      recommendedTools.length > 0
+        ? recommendedTools.map((tool) => tool.toolId).join(", ")
+        : "the candidate AI tooling",
   };
-
-  return [byPillar[pillarId] ?? common, common, `Keep "${businessCase.title}" limited to mock data until approved.`];
 }
 
 function searchableText(businessCase: BusinessCase): string {

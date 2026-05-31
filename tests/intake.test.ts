@@ -69,9 +69,9 @@ describe("business case intake mapping", () => {
     assert.equal(businessCase.dataSensitivity, "low");
     assert.deepEqual(businessCase.knownDataSources, [
       "Fictional request summaries",
-      "mock routing guidelines",
+      "synthetic routing guidelines",
       "synthetic topic labels",
-      "and demo-only status history.",
+      "and sample status history.",
     ]);
   });
 });

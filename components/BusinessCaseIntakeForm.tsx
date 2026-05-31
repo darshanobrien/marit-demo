@@ -18,7 +18,8 @@ import {
   type IntakeFormValues,
   type IntakeValidationError,
 } from "@/lib/intake/businessCaseIntake";
-import { aiTools, responsibleAiPillars } from "@/lib/data";
+import { responsibleAiPillars } from "@/lib/data";
+import { createLocalStorageAIToolRepository } from "@/lib/data/mockAiToolRepository";
 import { createLocalStorageBusinessCaseRepository } from "@/lib/data/mockBusinessCaseRepository";
 import { DeterministicEvaluationService } from "@/lib/evaluation";
 
@@ -141,7 +142,7 @@ export function BusinessCaseIntakeForm({ dictionary, onNavigate }: BusinessCaseI
     });
     const assessment = evaluator.evaluate({
       businessCase,
-      tools: aiTools,
+      tools: createLocalStorageAIToolRepository(window.localStorage).listTools(),
       pillars: responsibleAiPillars,
     });
 

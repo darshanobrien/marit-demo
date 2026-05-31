@@ -2,6 +2,13 @@ import type {
   BusinessArea,
   BusinessCasePriority,
   BusinessCaseStatus,
+  AIToolCapability,
+  AIToolDataSensitivitySuitability,
+  AIToolDeploymentModel,
+  AIToolInputType,
+  AIToolIntegrationOption,
+  AIToolOutputType,
+  AIToolStatus,
   DataSensitivityLevel,
   EvaluationRecommendation,
   EvaluationRiskLevel,
@@ -10,6 +17,7 @@ import type {
   IntakeDataSensitivity,
   IntakeUrgency,
 } from "../domain/types";
+import type { AIToolFormField, AIToolValidationCode } from "../admin/aiToolManagement";
 import type { DashboardPriority, DashboardSort } from "../dashboard/businessCaseDashboard";
 import type { IntakeField, IntakeValidationCode } from "../intake/businessCaseIntake";
 
@@ -68,6 +76,65 @@ export type Dictionary = {
     mockData: string;
     shellOnly: string;
     rolePrefix: string;
+  };
+  adminTools: {
+    summaryTitle: string;
+    summaryBody: string;
+    listTitle: string;
+    tableCaption: string;
+    formTitle: string;
+    formDescription: string;
+    savedNotice: string;
+    accessDeniedTitle: string;
+    accessDeniedBody: string;
+    columns: {
+      tool: string;
+      provider: string;
+      status: string;
+      deployment: string;
+      dataSensitivity: string;
+      humanReview: string;
+      lastReviewed: string;
+    };
+    fields: Record<
+      AIToolFormField,
+      {
+        label: string;
+        help?: string;
+        placeholder?: string;
+      }
+    >;
+    capabilities: Record<AIToolCapability, string>;
+    inputTypes: Record<AIToolInputType, string>;
+    outputTypes: Record<AIToolOutputType, string>;
+    deploymentModels: Record<AIToolDeploymentModel, string>;
+    dataSensitivitySuitability: Record<AIToolDataSensitivitySuitability, string>;
+    integrationOptions: Record<AIToolIntegrationOption, string>;
+    statuses: Record<AIToolStatus, string>;
+    reviewRequirement: {
+      required: string;
+      notRequired: string;
+    };
+    validation: Record<AIToolValidationCode, string> & {
+      summaryTitle: string;
+      summaryIntro: string;
+    };
+    actions: {
+      save: string;
+      clear: string;
+      backToDashboard: string;
+    };
+    labels: {
+      useCases: string;
+      inputs: string;
+      outputs: string;
+      languages: string;
+      english: string;
+      french: string;
+      integrations: string;
+      notes: string;
+      noItems: string;
+    };
   };
   dashboard: {
     summaryTitle: string;
@@ -346,17 +413,185 @@ export const dictionaries: Record<Locale, Dictionary> = {
       },
       adminTools: {
         title: "Admin / Tools",
-        description: "A placeholder for seeded demo configuration and future tool catalogue management.",
-        cardTitle: "Deferred configuration",
-        cardBody: "Admin capabilities are represented in navigation, but real configuration features remain outside the first shell.",
-        primaryAction: "View seeded tools",
-        secondaryAction: "Review constraints",
+        description: "Manage the AI tools catalogue used for feasibility and fit evaluation.",
+        cardTitle: "AI tools catalogue",
+        cardBody: "Review and maintain the AI capabilities available for business-case matching.",
+        primaryAction: "View tools",
+        secondaryAction: "Review catalogue",
       },
     },
     badges: {
       mockData: "Mock data only",
       shellOnly: "Shell only",
       rolePrefix: "Current role",
+    },
+    adminTools: {
+      summaryTitle: "AI tools catalogue",
+      summaryBody:
+        "Manage the AI capabilities Marit evaluates against submitted business cases. Added tools are saved for this browser session.",
+      listTitle: "Available AI tools",
+      tableCaption: "AI tools with provider, deployment, sensitivity suitability, review requirement, and review date.",
+      formTitle: "Add AI tool",
+      formDescription:
+        "Use complete metadata so feasibility matching can compare business needs with approved capabilities.",
+      savedNotice: "AI tool added to the catalogue.",
+      accessDeniedTitle: "Admin access required",
+      accessDeniedBody: "Switch to the Admin role to manage the AI tools catalogue.",
+      columns: {
+        tool: "Tool",
+        provider: "Provider",
+        status: "Status",
+        deployment: "Deployment",
+        dataSensitivity: "Data suitability",
+        humanReview: "Human review",
+        lastReviewed: "Last reviewed",
+      },
+      fields: {
+        name: {
+          label: "Tool name",
+          placeholder: "Example: Contract Review Assistant",
+        },
+        provider: {
+          label: "Vendor/provider",
+          placeholder: "Example: Internal AI Platform",
+        },
+        shortDescription: {
+          label: "Short description",
+          placeholder: "Summarize what the tool does and where it fits.",
+        },
+        capabilities: {
+          label: "Capabilities",
+        },
+        suitableUseCases: {
+          label: "Primary use cases",
+          help: "Separate use cases with commas or line breaks.",
+          placeholder: "Example: contract review, clause extraction, obligation summary",
+        },
+        supportedInputTypes: {
+          label: "Supported input types",
+        },
+        supportedOutputTypes: {
+          label: "Supported output types",
+        },
+        deploymentModel: {
+          label: "Deployment model",
+        },
+        dataSensitivitySuitability: {
+          label: "Data sensitivity suitability",
+        },
+        requiresHumanReview: {
+          label: "Human review required",
+          help: "Keep review required when outputs influence business action or decisions.",
+        },
+        integrationOptions: {
+          label: "Integration options",
+        },
+        supportsEnglish: {
+          label: "English supported",
+        },
+        supportsFrench: {
+          label: "French supported",
+        },
+        accessibilityConsiderations: {
+          label: "Accessibility considerations",
+          placeholder: "Describe output, review, or interface considerations.",
+        },
+        responsibleAiNotes: {
+          label: "Responsible AI notes",
+          placeholder: "Describe oversight, uncertainty, bias, or review expectations.",
+        },
+        securityPrivacyNotes: {
+          label: "Security/privacy notes",
+          placeholder: "Describe data handling, access, or privacy constraints.",
+        },
+        status: {
+          label: "Status",
+        },
+        lastReviewedAt: {
+          label: "Last reviewed date",
+          placeholder: "YYYY-MM-DD",
+        },
+      },
+      capabilities: {
+        documentExtraction: "Document extraction",
+        knowledgeSearch: "Knowledge search",
+        summarization: "Summarization",
+        translation: "Translation",
+        workflowTriage: "Workflow triage",
+        dataQuality: "Data quality",
+        policyQuestionAnswering: "Policy Q&A",
+        drafting: "Drafting",
+      },
+      inputTypes: {
+        text: "Text",
+        documents: "Documents",
+        images: "Images",
+        structuredData: "Structured data",
+        email: "Email",
+        code: "Code",
+        audio: "Audio",
+      },
+      outputTypes: {
+        text: "Text",
+        classification: "Classification",
+        summary: "Summary",
+        extractedData: "Extracted data",
+        recommendations: "Recommendations",
+        generatedContent: "Generated content",
+      },
+      deploymentModels: {
+        saas: "SaaS",
+        internalPlatform: "Internal platform",
+        azureService: "Azure service",
+        localPrivate: "Local/private",
+        approvedVendor: "Approved vendor",
+      },
+      dataSensitivitySuitability: {
+        public: "Public",
+        internal: "Internal",
+        confidential: "Confidential",
+        restricted: "Restricted",
+      },
+      integrationOptions: {
+        api: "API",
+        uiOnly: "UI only",
+        microsoft365: "Microsoft 365",
+        workflowAutomation: "Workflow automation",
+        customConnector: "Custom connector",
+      },
+      statuses: {
+        available: "Available",
+        pilot: "Pilot",
+        restricted: "Restricted",
+        deprecated: "Deprecated",
+      },
+      reviewRequirement: {
+        required: "Required",
+        notRequired: "Not required",
+      },
+      validation: {
+        summaryTitle: "There is a problem with the AI tool form",
+        summaryIntro: "Fix the fields below before adding the tool.",
+        required: "{field} is required.",
+        minSelected: "Select at least one option for {field}.",
+        languageRequired: "Select English, French, or both.",
+      },
+      actions: {
+        save: "Add AI tool",
+        clear: "Clear form",
+        backToDashboard: "Back to dashboard",
+      },
+      labels: {
+        useCases: "Use cases",
+        inputs: "Inputs",
+        outputs: "Outputs",
+        languages: "Languages",
+        english: "English",
+        french: "French",
+        integrations: "Integrations",
+        notes: "Notes",
+        noItems: "None listed",
+      },
     },
     dashboard: {
       summaryTitle: "Dashboard summary",
@@ -365,7 +600,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       roleIntro: {
         businessUser: "Your demo view emphasizes request status, readiness, and next step.",
         aiBuilder: "AI Builder view adds feasibility, tool-fit, and responsible AI risk signals for prioritization.",
-        admin: "Admin uses the same demo request list for now; no admin-only workflow is enabled.",
+        admin: "Admin view includes prioritization signals and the separate AI tools catalogue workflow.",
       },
       metrics: {
         totalRequests: "Total requests",
@@ -782,17 +1017,185 @@ export const dictionaries: Record<Locale, Dictionary> = {
       },
       adminTools: {
         title: "Administration / Outils",
-        description: "Un espace temporaire pour la configuration fictive et la future gestion du catalogue d'outils.",
-        cardTitle: "Configuration reportée",
-        cardBody: "Les capacités d'administration sont représentées dans la navigation, mais les vraies fonctions de configuration restent hors de la première coquille.",
-        primaryAction: "Voir les outils fictifs",
-        secondaryAction: "Examiner les contraintes",
+        description: "Gérez le catalogue d'outils IA utilisé pour l'évaluation de faisabilité et d'adéquation.",
+        cardTitle: "Catalogue des outils IA",
+        cardBody: "Révisez et maintenez les capacités IA disponibles pour l'appariement des dossiers d'affaires.",
+        primaryAction: "Voir les outils",
+        secondaryAction: "Réviser le catalogue",
       },
     },
     badges: {
       mockData: "Données fictives seulement",
       shellOnly: "Coquille seulement",
       rolePrefix: "Rôle actuel",
+    },
+    adminTools: {
+      summaryTitle: "Catalogue des outils IA",
+      summaryBody:
+        "Gérez les capacités IA que Marit compare aux dossiers d'affaires soumis. Les outils ajoutés sont enregistrés pour cette session de navigateur.",
+      listTitle: "Outils IA disponibles",
+      tableCaption: "Outils IA avec fournisseur, déploiement, données appropriées, révision humaine et date de révision.",
+      formTitle: "Ajouter un outil IA",
+      formDescription:
+        "Utilisez des métadonnées complètes afin que l'évaluation de faisabilité puisse comparer les besoins d'affaires aux capacités approuvées.",
+      savedNotice: "Outil IA ajouté au catalogue.",
+      accessDeniedTitle: "Accès administrateur requis",
+      accessDeniedBody: "Passez au rôle Administrateur pour gérer le catalogue des outils IA.",
+      columns: {
+        tool: "Outil",
+        provider: "Fournisseur",
+        status: "Statut",
+        deployment: "Déploiement",
+        dataSensitivity: "Données appropriées",
+        humanReview: "Révision humaine",
+        lastReviewed: "Dernière révision",
+      },
+      fields: {
+        name: {
+          label: "Nom de l'outil",
+          placeholder: "Exemple : Assistant de révision de contrats",
+        },
+        provider: {
+          label: "Fournisseur",
+          placeholder: "Exemple : plateforme IA interne",
+        },
+        shortDescription: {
+          label: "Brève description",
+          placeholder: "Résumez ce que fait l'outil et où il s'applique.",
+        },
+        capabilities: {
+          label: "Capacités",
+        },
+        suitableUseCases: {
+          label: "Principaux cas d'utilisation",
+          help: "Séparez les cas d'utilisation par des virgules ou des sauts de ligne.",
+          placeholder: "Exemple : révision de contrats, extraction de clauses, résumé des obligations",
+        },
+        supportedInputTypes: {
+          label: "Types d'entrée pris en charge",
+        },
+        supportedOutputTypes: {
+          label: "Types de sortie pris en charge",
+        },
+        deploymentModel: {
+          label: "Modèle de déploiement",
+        },
+        dataSensitivitySuitability: {
+          label: "Données appropriées selon la sensibilité",
+        },
+        requiresHumanReview: {
+          label: "Révision humaine requise",
+          help: "Gardez la révision requise lorsque les sorties influencent une action ou une décision d'affaires.",
+        },
+        integrationOptions: {
+          label: "Options d'intégration",
+        },
+        supportsEnglish: {
+          label: "Anglais pris en charge",
+        },
+        supportsFrench: {
+          label: "Français pris en charge",
+        },
+        accessibilityConsiderations: {
+          label: "Considérations d'accessibilité",
+          placeholder: "Décrivez les considérations liées aux sorties, à la révision ou à l'interface.",
+        },
+        responsibleAiNotes: {
+          label: "Notes d'IA responsable",
+          placeholder: "Décrivez la surveillance, l'incertitude, les biais ou les attentes de révision.",
+        },
+        securityPrivacyNotes: {
+          label: "Notes de sécurité/confidentialité",
+          placeholder: "Décrivez les contraintes de données, d'accès ou de confidentialité.",
+        },
+        status: {
+          label: "Statut",
+        },
+        lastReviewedAt: {
+          label: "Date de dernière révision",
+          placeholder: "AAAA-MM-JJ",
+        },
+      },
+      capabilities: {
+        documentExtraction: "Extraction de documents",
+        knowledgeSearch: "Recherche de connaissances",
+        summarization: "Résumé",
+        translation: "Traduction",
+        workflowTriage: "Triage des flux",
+        dataQuality: "Qualité des données",
+        policyQuestionAnswering: "Questions-réponses sur les politiques",
+        drafting: "Rédaction",
+      },
+      inputTypes: {
+        text: "Texte",
+        documents: "Documents",
+        images: "Images",
+        structuredData: "Données structurées",
+        email: "Courriel",
+        code: "Code",
+        audio: "Audio",
+      },
+      outputTypes: {
+        text: "Texte",
+        classification: "Classification",
+        summary: "Résumé",
+        extractedData: "Données extraites",
+        recommendations: "Recommandations",
+        generatedContent: "Contenu généré",
+      },
+      deploymentModels: {
+        saas: "SaaS",
+        internalPlatform: "Plateforme interne",
+        azureService: "Service Azure",
+        localPrivate: "Local/privé",
+        approvedVendor: "Fournisseur approuvé",
+      },
+      dataSensitivitySuitability: {
+        public: "Publiques",
+        internal: "Internes",
+        confidential: "Confidentielles",
+        restricted: "Restreintes",
+      },
+      integrationOptions: {
+        api: "API",
+        uiOnly: "Interface seulement",
+        microsoft365: "Microsoft 365",
+        workflowAutomation: "Automatisation des flux",
+        customConnector: "Connecteur personnalisé",
+      },
+      statuses: {
+        available: "Disponible",
+        pilot: "Pilote",
+        restricted: "Restreint",
+        deprecated: "Retiré",
+      },
+      reviewRequirement: {
+        required: "Requise",
+        notRequired: "Non requise",
+      },
+      validation: {
+        summaryTitle: "Le formulaire d'outil IA contient un problème",
+        summaryIntro: "Corrigez les champs ci-dessous avant d'ajouter l'outil.",
+        required: "{field} est obligatoire.",
+        minSelected: "Sélectionnez au moins une option pour {field}.",
+        languageRequired: "Sélectionnez l'anglais, le français ou les deux.",
+      },
+      actions: {
+        save: "Ajouter l'outil IA",
+        clear: "Effacer le formulaire",
+        backToDashboard: "Retour au tableau de bord",
+      },
+      labels: {
+        useCases: "Cas d'utilisation",
+        inputs: "Entrées",
+        outputs: "Sorties",
+        languages: "Langues",
+        english: "Anglais",
+        french: "Français",
+        integrations: "Intégrations",
+        notes: "Notes",
+        noItems: "Aucun élément indiqué",
+      },
     },
     dashboard: {
       summaryTitle: "Résumé du tableau de bord",
@@ -801,7 +1204,7 @@ export const dictionaries: Record<Locale, Dictionary> = {
       roleIntro: {
         businessUser: "Votre vue de démonstration met l'accent sur le statut, l'état de l'évaluation et la prochaine étape.",
         aiBuilder: "La vue constructeur IA ajoute des signaux de faisabilité, d'adéquation des outils et de risque IA responsable pour la priorisation.",
-        admin: "L'administrateur utilise la même liste de demandes pour l'instant; aucun parcours réservé à l'administration n'est activé.",
+        admin: "La vue administrateur inclut les signaux de priorité et le parcours distinct du catalogue des outils IA.",
       },
       metrics: {
         totalRequests: "Demandes totales",

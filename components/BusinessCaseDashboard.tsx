@@ -19,7 +19,8 @@ import {
   type DashboardRow,
   type DashboardSort,
 } from "@/lib/dashboard/businessCaseDashboard";
-import { aiTools, responsibleAiPillars } from "@/lib/data";
+import { responsibleAiPillars } from "@/lib/data";
+import { createLocalStorageAIToolRepository } from "@/lib/data/mockAiToolRepository";
 import { createLocalStorageBusinessCaseRepository } from "@/lib/data/mockBusinessCaseRepository";
 import type { BusinessArea } from "@/lib/domain/types";
 import { DeterministicEvaluationService } from "@/lib/evaluation";
@@ -52,7 +53,7 @@ export function BusinessCaseDashboard({
       businessCases: repository.listBusinessCases(),
       assessments: repository.listAssessments(),
       evaluator,
-      tools: aiTools,
+      tools: createLocalStorageAIToolRepository(window.localStorage).listTools(),
       pillars: responsibleAiPillars,
     }));
   }, [evaluator]);

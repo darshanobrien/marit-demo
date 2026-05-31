@@ -103,7 +103,7 @@ export const sampleIntakeFormValues: IntakeFormValues = {
   affectedPeople: "Operations coordinators, team leads, and internal service desk requestors.",
   estimatedVolume: "About 120 fictional internal requests per week during peak planning periods.",
   dataInvolved:
-    "Fictional request summaries, mock routing guidelines, synthetic topic labels, and demo-only status history.",
+    "Fictional request summaries, synthetic routing guidelines, synthetic topic labels, and sample status history.",
   dataSensitivity: ["public"],
   currentTools: "Shared mailbox, spreadsheet tracker, and internal guidance pages.",
   urgency: "high",

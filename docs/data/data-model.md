@@ -12,7 +12,7 @@ Represents a seeded user for role simulation. Keep this minimal; it is not a rea
 | --- | --- | --- |
 | `id` | string | Stable demo identifier. |
 | `displayName` | string | Minimal personal data. |
-| `role` | `businessUser` \| `aiBuilder` \| `admin` | Simulated role. Admin is deferred for the first demo. |
+| `role` | `businessUser` \| `aiBuilder` \| `admin` | Simulated role. Admin can access browser-session catalogue management. |
 | `team` | string | Optional demo team. |
 | `localePreference` | `en-CA` \| `fr-CA` | Optional. |
 
@@ -62,6 +62,7 @@ The mutable demo repository is local to the browser:
 
 - Seed cases remain in `lib/data/businessCases.ts`.
 - Submitted cases and generated assessments are stored in `localStorage`.
+- Added AI tools are stored in `localStorage` and merged with seeded tools.
 - The repository merges seeded and stored records by id.
 - No API, database, authentication, or Azure service is involved.
 
@@ -90,9 +91,21 @@ The Responsible AI report also uses a derived display model:
 | --- | --- | --- |
 | `id` | string | Stable identifier. |
 | `name` | string | Tool name. |
+| `provider` | string | Vendor, product owner, or internal platform. |
 | `shortDescription` | string | What the tool does. |
 | `capabilities` | AIToolCapability[] | Example: document extraction, search, summarization, triage. |
 | `suitableUseCases` | string[] | Fit signals. |
+| `supportedInputTypes` | AIToolInputType[] | Text, documents, images, structured data, email, code, or audio. |
+| `supportedOutputTypes` | AIToolOutputType[] | Text, classification, summary, extracted data, recommendations, or generated content. |
+| `deploymentModel` | AIToolDeploymentModel | SaaS, internal platform, Azure service, local/private, or approved vendor. |
+| `dataSensitivitySuitability` | AIToolDataSensitivitySuitability[] | Public, internal, confidential, or restricted suitability. |
+| `integrationOptions` | AIToolIntegrationOption[] | API, UI only, Microsoft 365, workflow automation, or custom connector. |
+| `supportedLanguages` | object | English and French capability flags. |
+| `accessibilityConsiderations` | string | Accessibility notes for use and review. |
+| `responsibleAiNotes` | string | Responsible AI review and oversight notes. |
+| `securityPrivacyNotes` | string | Security, privacy, and data handling notes. |
+| `status` | `available` \| `pilot` \| `restricted` \| `deprecated` | Catalogue status. |
+| `lastReviewedAt` | string | Last review date in `YYYY-MM-DD` format. |
 | `limitations` | string[] | Constraints and caveats. |
 | `riskProfile` | AIToolRiskProfile | Demo sensitivity support, risk notes, and human review flag. |
 | `implementationComplexity` | `low` \| `medium` \| `high` | Demo build estimate. |

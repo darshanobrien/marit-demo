@@ -104,14 +104,24 @@ Key elements:
 - Responsible AI table.
 - Review notes if available.
 
-## Admin Configuration Later
+## Admin AI Tools Management
 
-Purpose: Manage demo configuration after the happy path is working.
+Purpose: Let Admin users manage the AI tools catalogue used for feasibility matching.
 
-Do not build this for the first demo unless specifically requested.
+Access:
+
+- Visible only when the simulated role is Admin.
+- Hidden from Business User and AI Builder navigation.
+- Uses browser-session storage for added tools; seeded tools remain available.
+
+Key elements:
+
+- Current AI tools table with provider, status, deployment model, data suitability, human review, and review date.
+- Add AI tool form with validation for required catalogue metadata.
+- English and Canadian French content through the shared i18n dictionary.
+- Admin access remains simulated and is not production authorization.
 
 Deferred elements:
 
-- AI tools catalogue editing.
 - Responsible AI pillar editing.
 - Demo data reset.

@@ -1,10 +1,23 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { aiTools, businessCases, responsibleAiPillars } from "../lib/data";
+import type { BusinessCaseAssessment } from "../lib/domain/types";
 import { DeterministicEvaluationService } from "../lib/evaluation";
 
 const service = new DeterministicEvaluationService();
 const plausibleBusinessCase = businessCases[0];
+const bannedAssessmentPhrases = [
+  ["weekend", "demo"].join(" "),
+  ["demo", "scoring"].join(" "),
+  ["deterministic", "demo", "scoring"].join(" "),
+  ["the", "demo", "keeps"].join(" "),
+  ["limited", "to", "mock", "data", "until", "approved"].join(" "),
+  ["production", "use", "would", "need", "stronger", "evidence"].join(" "),
+];
+
+function assessmentText(assessment: BusinessCaseAssessment): string {
+  return JSON.stringify(assessment).toLowerCase();
+}
 
 describe("DeterministicEvaluationService", () => {
   it("returns all 10 responsible AI pillar assessments", () => {
@@ -66,6 +79,39 @@ describe("DeterministicEvaluationService", () => {
 
     for (const value of scores) {
       assert.ok(value >= 0 && value <= 100, `score ${value} should be between 0 and 100`);
+    }
+  });
+
+  it("does not include banned demo wording in generated assessment content", () => {
+    for (const businessCase of businessCases) {
+      const assessment = service.evaluate({
+        businessCase,
+        tools: aiTools,
+        pillars: responsibleAiPillars,
+      });
+      const text = assessmentText(assessment);
+
+      for (const phrase of bannedAssessmentPhrases) {
+        assert.equal(text.includes(phrase), false, `${businessCase.id} should not include "${phrase}"`);
+      }
+    }
+  });
+
+  it("returns richer pillar content for every seeded business case", () => {
+    for (const businessCase of businessCases) {
+      const assessment = service.evaluate({
+        businessCase,
+        tools: aiTools,
+        pillars: responsibleAiPillars,
+      });
+
+      for (const pillar of assessment.pillarAssessments) {
+        assert.ok(pillar.explanation.length >= 120, `${businessCase.id} ${pillar.pillarId} needs a detailed explanation`);
+        assert.ok(pillar.concerns.length >= 3, `${businessCase.id} ${pillar.pillarId} needs specific concerns`);
+        assert.ok(pillar.pros.length >= 3, `${businessCase.id} ${pillar.pillarId} needs positive indicators`);
+        assert.ok(pillar.cons.length >= 2, `${businessCase.id} ${pillar.pillarId} needs risks or caveats`);
+        assert.ok(pillar.mitigationIdeas.length >= 3, `${businessCase.id} ${pillar.pillarId} needs mitigation ideas`);
+      }
     }
   });
 });
