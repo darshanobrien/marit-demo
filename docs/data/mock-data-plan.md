@@ -28,17 +28,20 @@ Each case should vary by urgency, impact, data sensitivity, available data, and 
 
 ### AI Tools
 
-The current seed set includes 7 mocked internal tools:
+The current approved AI tools seed set includes 10 tools:
 
-- Document Intelligence Extractor.
-- Knowledge Search Assistant.
-- Meeting Summarization Assistant.
-- Translation and Terminology Assistant.
-- Workflow Triage Copilot.
-- Data Quality Analyzer.
-- Policy Q&A Assistant.
+- Codex (desktop app).
+- Codex plugins.
+- M365 Copilot chat.
+- Github Copilot.
+- Azure Open AI.
+- Custom web app development platform with Azure Open AI support for rapidly developing full custom applications with custom AI workflows.
+- Azure Foundry agents.
+- NIMO - a teams-integrated chatbot with access to IT support ticketing and knowledgebases.
+- Claude Code.
+- Claude Cowork.
 
-Each tool includes id, name, description, capabilities, suitable use cases, limitations, risk notes, supported demo data sensitivity, status, and implementation complexity.
+Each tool includes id, name, description, capabilities, suitable use cases, limitations, risk notes, supported data sensitivity, status, implementation complexity, and catalogue metadata for exact inventory labels. All approved seed tools are suitable for Public and Confidential data. Codex plugins is Under Review. The custom web app platform and Azure Foundry agents require development. The custom web app platform uses Customizable as its integration option.
 
 Administrators maintain an inventory of approved, restricted, pilot, and deprecated AI tools, as well as AI tools currently under review. Business cases are assessed not just abstractly, but against the actual AI capabilities available to the firm.
 

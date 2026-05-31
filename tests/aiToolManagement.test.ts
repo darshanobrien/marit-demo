@@ -64,7 +64,59 @@ describe("AI tools repository", () => {
     const repository = createLocalStorageAIToolRepository(new MemoryStorage());
 
     assert.equal(repository.listTools().length, aiTools.length);
-    assert.ok(repository.listTools().some((tool) => tool.name === "Knowledge Search Assistant"));
+    assert.deepEqual(
+      repository.listTools().map((tool) => tool.name),
+      [
+        "Codex (desktop app)",
+        "Codex plugins",
+        "M365 Copilot chat",
+        "Github Copilot",
+        "Azure Open AI",
+        "Custom web app development platform with Azure Open AI support for rapidly developing full custom applications with custom AI workflows",
+        "Azure Foundry agents",
+        "NIMO - a teams-integrated chatbot with access to IT support ticketing and knowledgebases",
+        "Claude Code",
+        "Claude Cowork",
+      ],
+    );
+  });
+
+  it("uses approved catalogue statuses and sensitivity suitability", () => {
+    assert.equal(aiTools.find((tool) => tool.name === "Codex plugins")?.status, "underReview");
+    assert.equal(
+      aiTools.find((tool) => tool.name === "Azure Foundry agents")?.status,
+      "requiresDevelopment",
+    );
+    assert.equal(
+      aiTools.find((tool) =>
+        tool.name.startsWith("Custom web app development platform with Azure Open AI support"),
+      )?.status,
+      "requiresDevelopment",
+    );
+    assert.ok(
+      aiTools
+        .filter(
+          (tool) =>
+            tool.name !== "Codex plugins" &&
+            tool.name !== "Azure Foundry agents" &&
+            !tool.name.startsWith("Custom web app development platform with Azure Open AI support"),
+        )
+        .every((tool) => tool.status === "available"),
+    );
+    assert.ok(
+      aiTools.every((tool) =>
+        arraysEqual(tool.dataSensitivitySuitability, ["public", "confidential"]),
+      ),
+    );
+  });
+
+  it("marks the custom web app platform integration as customizable", () => {
+    const customPlatform = aiTools.find((tool) =>
+      tool.name.startsWith("Custom web app development platform with Azure Open AI support"),
+    );
+
+    assert.ok(customPlatform?.integrationOptions.includes("customizable"));
+    assert.deepEqual(customPlatform?.catalogueMetadata?.integrationOptions, ["Customizable"]);
   });
 
   it("saves a valid AI tool and returns it in the list", () => {
@@ -139,4 +191,8 @@ function validFormValues(): AIToolFormValues {
     status: "underReview",
     lastReviewedAt: "2026-05-31",
   };
+}
+
+function arraysEqual<T>(actual: T[], expected: T[]): boolean {
+  return actual.length === expected.length && actual.every((value, index) => value === expected[index]);
 }

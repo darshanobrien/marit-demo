@@ -179,13 +179,13 @@ export function AdminAiToolsPage({
                       {admin.labels.useCases}: {formatList(tool.suitableUseCases, admin.labels.noItems)}
                     </span>
                     <span className="case-table__meta">
-                      {admin.fields.capabilities.label}: {formatList(tool.capabilities.map((item) => admin.capabilities[item]), admin.labels.noItems)}
+                      {admin.fields.capabilities.label}: {formatList(displayCapabilities(tool, admin), admin.labels.noItems)}
                     </span>
                     <span className="case-table__meta">
-                      {admin.labels.inputs}: {formatList(tool.supportedInputTypes.map((item) => admin.inputTypes[item]), admin.labels.noItems)}
+                      {admin.labels.inputs}: {formatList(displayInputTypes(tool, admin), admin.labels.noItems)}
                     </span>
                     <span className="case-table__meta">
-                      {admin.labels.outputs}: {formatList(tool.supportedOutputTypes.map((item) => admin.outputTypes[item]), admin.labels.noItems)}
+                      {admin.labels.outputs}: {formatList(displayOutputTypes(tool, admin), admin.labels.noItems)}
                     </span>
                   </td>
                   <td data-label={admin.columns.provider}>{tool.provider}</td>
@@ -193,9 +193,9 @@ export function AdminAiToolsPage({
                     <Badge variant="status">{admin.statuses[tool.status]}</Badge>
                   </td>
                   <td data-label={admin.columns.deployment}>
-                    {admin.deploymentModels[tool.deploymentModel]}
+                    {displayDeploymentModel(tool, admin)}
                     <span className="case-table__meta">
-                      {admin.labels.integrations}: {formatList(tool.integrationOptions.map((item) => admin.integrationOptions[item]), admin.labels.noItems)}
+                      {admin.labels.integrations}: {formatList(displayIntegrationOptions(tool, admin), admin.labels.noItems)}
                     </span>
                   </td>
                   <td data-label={admin.columns.dataSensitivity}>
@@ -608,6 +608,26 @@ function validationMessage(error: AIToolValidationError, dictionary: Dictionary)
 
 function formatList(values: string[], emptyLabel: string): string {
   return values.length > 0 ? values.join(", ") : emptyLabel;
+}
+
+function displayCapabilities(tool: AITool, admin: Dictionary["adminTools"]): string[] {
+  return tool.catalogueMetadata?.capabilities ?? tool.capabilities.map((item) => admin.capabilities[item]);
+}
+
+function displayInputTypes(tool: AITool, admin: Dictionary["adminTools"]): string[] {
+  return tool.catalogueMetadata?.supportedInputTypes ?? tool.supportedInputTypes.map((item) => admin.inputTypes[item]);
+}
+
+function displayOutputTypes(tool: AITool, admin: Dictionary["adminTools"]): string[] {
+  return tool.catalogueMetadata?.supportedOutputTypes ?? tool.supportedOutputTypes.map((item) => admin.outputTypes[item]);
+}
+
+function displayDeploymentModel(tool: AITool, admin: Dictionary["adminTools"]): string {
+  return tool.catalogueMetadata?.deploymentModel ?? admin.deploymentModels[tool.deploymentModel];
+}
+
+function displayIntegrationOptions(tool: AITool, admin: Dictionary["adminTools"]): string[] {
+  return tool.catalogueMetadata?.integrationOptions ?? tool.integrationOptions.map((item) => admin.integrationOptions[item]);
 }
 
 function formatLanguages(tool: AITool, admin: Dictionary["adminTools"]): string {

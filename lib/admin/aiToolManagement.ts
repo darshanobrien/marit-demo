@@ -61,11 +61,13 @@ export const aiToolIntegrationOptionOptions: AIToolIntegrationOption[] = [
   "microsoft365",
   "workflowAutomation",
   "customConnector",
+  "customizable",
 ];
 
 export const aiToolStatusOptions: AIToolStatus[] = [
   "available",
   "underReview",
+  "requiresDevelopment",
   "pilot",
   "restricted",
   "deprecated",

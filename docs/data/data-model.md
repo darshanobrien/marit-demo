@@ -99,14 +99,15 @@ Administrators maintain an inventory of approved, restricted, pilot, and depreca
 | `suitableUseCases` | string[] | Fit signals. |
 | `supportedInputTypes` | AIToolInputType[] | Text, documents, images, structured data, email, code, or audio. |
 | `supportedOutputTypes` | AIToolOutputType[] | Text, classification, summary, extracted data, recommendations, or generated content. |
-| `deploymentModel` | AIToolDeploymentModel | SaaS, internal platform, Azure service, local/private, or approved vendor. |
+| `deploymentModel` | AIToolDeploymentModel | SaaS, internal platform, Azure service, local/private, or approved vendor. Seed tools may also provide exact display text in `catalogueMetadata`. |
 | `dataSensitivitySuitability` | AIToolDataSensitivitySuitability[] | Public, internal, confidential, or restricted suitability. |
-| `integrationOptions` | AIToolIntegrationOption[] | API, UI only, Microsoft 365, workflow automation, or custom connector. |
+| `integrationOptions` | AIToolIntegrationOption[] | API, UI only, Microsoft 365, workflow automation, custom connector, or customizable. |
+| `catalogueMetadata` | object | Optional exact display labels for approved inventory capabilities, input types, output types, deployment model, and integration options. |
 | `supportedLanguages` | object | English and French capability flags. |
 | `accessibilityConsiderations` | string | Accessibility notes for use and review. |
 | `responsibleAiNotes` | string | Responsible AI review and oversight notes. |
 | `securityPrivacyNotes` | string | Security, privacy, and data handling notes. |
-| `status` | `available` \| `underReview` \| `pilot` \| `restricted` \| `deprecated` | Catalogue status. |
+| `status` | `available` \| `underReview` \| `requiresDevelopment` \| `pilot` \| `restricted` \| `deprecated` | Catalogue status. |
 | `lastReviewedAt` | string | Last review date in `YYYY-MM-DD` format. |
 | `limitations` | string[] | Constraints and caveats. |
 | `riskProfile` | AIToolRiskProfile | Demo sensitivity support, risk notes, and human review flag. |

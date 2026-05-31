@@ -58,8 +58,8 @@ describe("DeterministicEvaluationService", () => {
 
     assert.ok(assessment.recommendedTools.length >= 1);
     assert.ok(
-      assessment.recommendedTools.some((tool) => tool.toolId === "tool-workflow-triage-copilot"),
-      "expected workflow triage case to recommend the Workflow Triage Copilot",
+      assessment.recommendedTools.some((tool) => tool.toolId === "tool-nimo-teams-it-support-chatbot"),
+      "expected workflow triage case to recommend NIMO",
     );
   });
 

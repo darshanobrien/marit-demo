@@ -69,8 +69,15 @@ export type AIToolIntegrationOption =
   | "uiOnly"
   | "microsoft365"
   | "workflowAutomation"
-  | "customConnector";
-export type AIToolStatus = "available" | "underReview" | "pilot" | "restricted" | "deprecated";
+  | "customConnector"
+  | "customizable";
+export type AIToolStatus =
+  | "available"
+  | "underReview"
+  | "requiresDevelopment"
+  | "pilot"
+  | "restricted"
+  | "deprecated";
 
 export type AIToolCapability =
   | "documentExtraction"
@@ -141,6 +148,13 @@ export type AITool = {
   deploymentModel: AIToolDeploymentModel;
   dataSensitivitySuitability: AIToolDataSensitivitySuitability[];
   integrationOptions: AIToolIntegrationOption[];
+  catalogueMetadata?: {
+    capabilities: string[];
+    supportedInputTypes: string[];
+    supportedOutputTypes: string[];
+    deploymentModel: string;
+    integrationOptions: string[];
+  };
   supportedLanguages: {
     english: boolean;
     french: boolean;
