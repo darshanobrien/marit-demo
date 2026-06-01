@@ -59,7 +59,7 @@ The sample intake request uses fictional internal-service details only. It must 
 
 ## Dashboard Display Data
 
-The Dashboard reads seeded cases plus stored browser-session cases through the mock repository. Stored submitted cases use their saved assessment. Seeded cases or older cases without a stored assessment may receive an in-memory deterministic assessment for display and prioritization only; this does not write new records to browser storage.
+The Dashboard reads seeded cases plus stored browser-session cases through the mock repository. Stored submitted cases use their saved assessment. Seeded cases or older cases without a stored assessment may receive an in-memory deterministic assessment for display and prioritization only; this does not write new records to browser storage. Generated recommendations are status-aware: Available tools are preferred for immediate recommendations, Under Review tools are not described as production-ready, and Requires Development tools are treated as future/custom options.
 
 Dashboard priority is a simple display signal derived from evaluator score and urgency. It is not a final approval or business decision.
 

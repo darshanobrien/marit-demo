@@ -77,7 +77,8 @@ The output should follow `BusinessCaseAssessment` in [Data Model](../data/data-m
 The first evaluator:
 
 - Scores feasibility from request clarity, known data sources, tool fit, and data sensitivity.
-- Recommends up to three AI tools based on capability keyword matches, data readiness, sensitivity fit, and implementation complexity.
+- Recommends up to three approved AI tools based on capability keyword matches, domain fit, input/output fit, data readiness, sensitivity fit, deployment fit, integration fit, tool status, and implementation complexity.
+- Prefers Available tools for immediate recommendations. Under Review tools must be described as not production-ready, and Requires Development tools must be described as future/custom options rather than immediately available solutions.
 - Produces all 10 responsible AI pillar assessments every time.
 - Generates concerns, pros, cons, mitigation ideas, a recommendation category, and a plain-language next step.
 - Uses a stable generated timestamp so identical inputs produce identical outputs.

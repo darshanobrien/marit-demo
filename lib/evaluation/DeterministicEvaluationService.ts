@@ -1,6 +1,7 @@
 import type {
   AITool,
   AIToolCapability,
+  AIToolStatus,
   BusinessCase,
   BusinessCaseAssessment,
   DataSensitivityLevel,
@@ -41,6 +42,12 @@ type CaseContext = {
   desiredOutcome: string;
   constraints: string;
   toolFit: string;
+};
+
+type ToolCandidate = {
+  tool: AITool;
+  recommendation: ToolRecommendation;
+  availableNow: boolean;
 };
 
 const capabilityKeywords: Record<AIToolCapability, string[]> = {
@@ -135,23 +142,51 @@ function recommendTools(
   tools: AITool[],
   profile: SignalProfile,
 ): ToolRecommendation[] {
-  return tools
+  const text = searchableText(businessCase);
+  const candidates = tools
+    .filter((tool) => tool.status !== "deprecated")
     .map((tool) => {
       const capabilityFit = average(tool.capabilities.map((capability) => profile.capabilityScores[capability]));
       const sensitivityFit = toolSupportsSensitivity(tool, businessCase.dataSensitivity) ? 12 : -18;
       const complexityPenalty = tool.implementationComplexity === "high" ? 8 : tool.implementationComplexity === "medium" ? 3 : 0;
-      const fitValue = clamp(Math.round(capabilityFit + profile.dataSignal * 0.18 + sensitivityFit - complexityPenalty));
+      const statusPenalty = statusPenaltyFor(tool.status);
+      const domainFit = domainFitFor(text, tool);
+      const fitValue = clamp(
+        Math.round(
+          capabilityFit +
+            profile.dataSignal * 0.18 +
+            sensitivityFit +
+            domainFit -
+            complexityPenalty -
+            statusPenalty,
+        ),
+      );
 
       return {
-        toolId: tool.id,
-        fitScore: score(fitValue, `${tool.name} fit is based on capability signals, data readiness, and risk fit.`, true),
-        rationale: `${tool.name} is relevant because it supports ${tool.capabilities.join(", ")} and matches the submitted pain point signals.`,
-        limitations: tool.limitations.slice(0, 2),
-      };
+        tool,
+        availableNow: tool.status === "available",
+        recommendation: {
+          toolId: tool.id,
+          fitScore: score(
+            fitValue,
+            `${tool.name} fit is based on approved catalogue capability signals, data readiness, data sensitivity, status, deployment fit, and integration fit.`,
+            true,
+          ),
+          rationale: buildToolRationale(tool),
+          limitations: buildToolLimitations(tool),
+        },
+      } satisfies ToolCandidate;
     })
-    .filter((tool) => tool.fitScore.value >= 35)
-    .sort((a, b) => b.fitScore.value - a.fitScore.value)
-    .slice(0, 3);
+    .filter((candidate) => candidate.recommendation.fitScore.value >= 35)
+    .sort((a, b) => b.recommendation.fitScore.value - a.recommendation.fitScore.value);
+
+  const availableCandidates = candidates.filter((candidate) => candidate.availableNow);
+
+  if (availableCandidates.length > 0) {
+    return availableCandidates.slice(0, 3).map((candidate) => candidate.recommendation);
+  }
+
+  return candidates.slice(0, 2).map((candidate) => candidate.recommendation);
 }
 
 function buildFeasibility(
@@ -165,7 +200,11 @@ function buildFeasibility(
   const gaps = [
     ...(businessCase.knownDataSources.length === 0 ? ["Confirm representative data sources."] : []),
     ...(businessCase.dataSensitivity === "high" ? ["Define masking, access, and review expectations for sensitive data."] : []),
-    ...(recommendedTools.length === 0 ? ["Clarify the AI capability needed before selecting a tool."] : []),
+    ...(recommendedTools.length === 0
+      ? [
+          "No approved available tool is clearly appropriate yet; clarify whether the gap is classification, summarization, extraction, retrieval, workflow integration, or a bespoke application need.",
+        ]
+      : []),
   ];
 
   return {
@@ -178,7 +217,7 @@ function buildFeasibility(
       `${businessCase.knownDataSources.length} relevant data source(s) were identified.`,
       recommendedTools.length > 0
         ? `${recommendedTools.length} relevant AI tool recommendation(s) were found.`
-        : "No strong tool match was found yet.",
+        : "No approved available tool match was found yet; the capability gap should be clarified before selecting a solution.",
     ],
     gaps,
   };
@@ -370,6 +409,170 @@ function confidenceFor(businessCase: BusinessCase, recommendedTools: ToolRecomme
   }
 
   return "low";
+}
+
+function statusPenaltyFor(status: AIToolStatus): number {
+  switch (status) {
+    case "available":
+      return 0;
+    case "restricted":
+      return 12;
+    case "underReview":
+      return 20;
+    case "requiresDevelopment":
+      return 28;
+    case "pilot":
+      return 8;
+    case "deprecated":
+      return 100;
+  }
+}
+
+function domainFitFor(text: string, tool: AITool): number {
+  const name = tool.name.toLowerCase();
+
+  if (hasAny(text, ["support", "ticket", "helpdesk", "troubleshoot", "teams", "employee technology"])) {
+    if (name.includes("nimo")) {
+      return 34;
+    }
+
+    if (name.includes("m365 copilot")) {
+      return 8;
+    }
+  }
+
+  if (hasAny(text, ["policy", "manager", "employee", "handbook", "faq", "guidance"])) {
+    if (name.includes("m365 copilot")) {
+      return 28;
+    }
+
+    if (name.includes("azure open ai")) {
+      return 12;
+    }
+  }
+
+  if (hasAny(text, ["spreadsheet", "data quality", "missing", "duplicate", "planning", "profile"])) {
+    if (name.includes("azure open ai")) {
+      return 26;
+    }
+
+    if (name.includes("custom web app") || name.includes("foundry")) {
+      return 16;
+    }
+  }
+
+  if (hasAny(text, ["bilingual", "french", "translation", "terminology", "communications", "updates"])) {
+    if (name.includes("m365 copilot")) {
+      return 30;
+    }
+
+    if (name.includes("claude cowork")) {
+      return 18;
+    }
+
+    if (name.includes("azure open ai")) {
+      return 10;
+    }
+  }
+
+  if (hasAny(text, ["code", "repository", "software", "defect", "refactor", "test", "developer"])) {
+    if (
+      name.includes("github copilot") ||
+      name.includes("codex (desktop app)") ||
+      name.includes("claude code")
+    ) {
+      return 32;
+    }
+
+    if (name.includes("codex plugins")) {
+      return 12;
+    }
+  }
+
+  if (hasAny(text, ["triage", "classify", "routing", "queue", "request", "urgency", "priority"])) {
+    if (name.includes("nimo")) {
+      return 16;
+    }
+
+    if (name.includes("azure open ai")) {
+      return 14;
+    }
+
+    if (name.includes("custom web app") || name.includes("foundry")) {
+      return 14;
+    }
+  }
+
+  return 0;
+}
+
+function hasAny(text: string, keywords: string[]): boolean {
+  return keywords.some((keyword) => text.includes(keyword));
+}
+
+function buildToolRationale(tool: AITool): string {
+  return [
+    `${tool.name} ${statusRationale(tool.status)}.`,
+    `Input fit: ${formatCatalogueList(tool.catalogueMetadata?.supportedInputTypes)}.`,
+    `Output fit: ${formatCatalogueList(tool.catalogueMetadata?.supportedOutputTypes)}.`,
+    `Deployment and integration fit: ${tool.catalogueMetadata?.deploymentModel ?? tool.deploymentModel}; integrations include ${formatCatalogueList(tool.catalogueMetadata?.integrationOptions)}.`,
+    `Data sensitivity fit: suitable for ${formatSensitivity(tool)} data with human review ${tool.riskProfile.requiresHumanReview ? "required" : "not required"}.`,
+    `Security and privacy review: ${firstSentence(tool.securityPrivacyNotes)}`,
+  ].join(" ");
+}
+
+function buildToolLimitations(tool: AITool): string[] {
+  return [
+    statusLimitation(tool.status),
+    firstSentence(tool.securityPrivacyNotes),
+    ...tool.limitations.slice(0, 1),
+  ].filter(Boolean);
+}
+
+function statusRationale(status: AIToolStatus): string {
+  switch (status) {
+    case "available":
+      return "is available in the approved AI tools catalogue and can be considered for discovery subject to normal AI Builder review";
+    case "underReview":
+      return "is under review and should not be treated as production-ready";
+    case "requiresDevelopment":
+      return "requires development and should be treated as a future or custom option, not an immediately available solution";
+    case "pilot":
+      return "is in pilot and should be considered only with pilot constraints and explicit owner approval";
+    case "restricted":
+      return "is restricted and should be considered only where the restriction conditions are satisfied";
+    case "deprecated":
+      return "is deprecated and should not be selected for new work";
+  }
+}
+
+function statusLimitation(status: AIToolStatus): string {
+  switch (status) {
+    case "available":
+      return "Available status still requires AI Builder review, data validation, and security/privacy confirmation before business use.";
+    case "underReview":
+      return "Under Review status means this tool is not production-ready and should not be treated as an approved operational solution.";
+    case "requiresDevelopment":
+      return "Requires Development status means this is a future/custom option, not an immediately available solution.";
+    case "pilot":
+      return "Pilot status requires explicit pilot controls, ownership, and evaluation criteria.";
+    case "restricted":
+      return "Restricted status requires confirmation that the use case satisfies catalogue restrictions.";
+    case "deprecated":
+      return "Deprecated status means this tool should not be used for new business cases.";
+  }
+}
+
+function formatCatalogueList(values: string[] | undefined): string {
+  return values && values.length > 0 ? values.join(", ") : "not specified in catalogue metadata";
+}
+
+function formatSensitivity(tool: AITool): string {
+  return tool.dataSensitivitySuitability.join(", ");
+}
+
+function firstSentence(value: string): string {
+  return value.split(/(?<=\.)\s+/)[0] ?? value;
 }
 
 function riskForPillar(
